@@ -1,1161 +1,1057 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkedIn Master Suite - Frameworks Edition</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); }
-        .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        .framework-card { transition: all 0.3s ease; }
-        .framework-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
-        /* Améliorations d’accessibilité et de contraste */
-        :root { color-scheme: light; }
-        input, select, textarea { color: #1f2937; background-color: #ffffff; }
-        input::placeholder, textarea::placeholder { color: #9ca3af; }
-        button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LinkedIn Master Suite — v7.1 Live Actions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    :root { color-scheme: light; }
+    html, body { height: 100%; }
+    body { font-family: 'Inter', sans-serif; }
+    /* Fond vibrant, pas de gris/ blanc plein écran */
+    .vibrant-bg {
+      background: radial-gradient(1200px 600px at 10% 10%, #f59e0b22, transparent 60%),
+                  radial-gradient(1200px 700px at 90% 0%, #8b5cf622, transparent 60%),
+                  linear-gradient(135deg, #0ea5e9 0%, #7c3aed 100%);
+    }
+    .glass { background: rgba(255,255,255,0.12); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.18);}
+    .card { background: rgba(255,255,255,0.96); }
+    .pill { background: rgba(255,255,255,0.75); }
+    .focus-ring:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+    .btn-gradient { background: linear-gradient(90deg,#6366f1, #a855f7); }
+    .btn-gradient:hover{ filter: brightness(1.1); }
+    .btn-warm { background: linear-gradient(90deg,#f59e0b, #ef4444); }
+    .btn-warm:hover{ filter: brightness(1.1); }
+    .badge { background: linear-gradient(90deg,#22c55e,#14b8a6); }
+    .shadow-deep { box-shadow: 0 20px 60px -15px rgba(0,0,0,0.35);}
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
+    .tag { background: #eef2ff; color:#4338ca; }
+    .tag2{ background:#ecfeff; color:#0e7490;}
+    .tag3{ background:#fef3c7; color:#b45309;}
+    .hidden-vis { display: none; }
+    .k { color:#0ea5e9;}
+    .hl { background: #fff3c6; border-radius: .25rem; padding: .1rem .25rem;}
+  </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Header -->
-    <header class="gradient-bg text-white shadow-lg sticky top-0 z-40">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                        <i class="fab fa-linkedin text-xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold">LinkedIn Master Suite</h1>
-                        <p class="text-sm opacity-90">Frameworks Edition</p>
-                    </div>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <button onclick="toggleProfileMenu()" class="flex items-center space-x-2 bg-white text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-all">
-                            <i class="fas fa-user-circle text-lg"></i>
-                            <span id="userName">Mon Profil</span>
-                            <i class="fas fa-chevron-down text-sm"></i>
-                        </button>
-                        
-                        <!-- Menu Profil -->
-                        <div id="profileMenu" class="absolute right-0 mt-2 w-64 bg-white text-gray-800 rounded-lg shadow-xl border border-gray-200 hidden">
-                            <div class="p-4 border-b border-gray-100">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-user text-white"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold text-gray-900" id="profileName">Utilisateur</p>
-                                        <p class="text-sm text-gray-600" id="profileSector">Secteur non défini</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="py-2">
-                                <button onclick="editProfile()" class="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center space-x-2">
-                                    <i class="fas fa-edit text-gray-500"></i>
-                                    <span>Modifier mon profil</span>
-                                </button>
-                                <button onclick="viewStats()" class="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center space-x-2">
-                                    <i class="fas fa-chart-bar text-gray-500"></i>
-                                    <span>Mes statistiques</span>
-                                </button>
-                                <button onclick="exportData()" class="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center space-x-2">
-                                    <i class="fas fa-download text-gray-500"></i>
-                                    <span>Exporter mes données</span>
-                                </button>
-                                <hr class="my-2">
-                                <button onclick="logout()" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center space-x-2">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    <span>Se déconnecter</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<body class="vibrant-bg text-gray-900">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 glass">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-white/30 text-white">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4V4zm0 9h7v7H4v-7zm9-9h7v7h-7V4zm0 9h7v7h-7v-7z"/></svg>
+          </div>
+          <div class="text-white">
+            <h1 class="font-bold text-xl">LinkedIn Master Suite</h1>
+            <p class="text-xs opacity-90">v7.1 — Live Actions & Frameworks</p>
+          </div>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <!-- Stats Dashboard -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm">Posts Créés</p>
-                        <p class="text-2xl font-bold text-gray-800" id="postsCount">0</p>
-                    </div>
-                    <i class="fas fa-edit text-blue-500 text-2xl"></i>
+        <!-- Profil button high-contrast -->
+        <div class="relative">
+          <button id="profileBtn" class="pill text-gray-900 px-4 py-2 rounded-lg hover:bg-white/90 transition flex items-center gap-2 focus-ring">
+            <span class="inline-flex w-6 h-6 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs">👤</span>
+            <span id="userName">Mon Profil</span>
+            <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <!-- Menu Profil lisible -->
+          <div id="profileMenu" class="absolute right-0 mt-2 w-72 card rounded-xl shadow-deep border border-white/40 hidden">
+            <div class="p-4 border-b">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white flex items-center justify-center">🧿</div>
+                <div>
+                  <p id="profileName" class="font-semibold">Utilisateur</p>
+                  <p id="profileSector" class="text-sm text-gray-600">Secteur non défini</p>
                 </div>
+              </div>
             </div>
-            
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm">Leads Générés</p>
-                        <p class="text-2xl font-bold text-gray-800" id="leadsCount">0</p>
-                    </div>
-                    <i class="fas fa-users text-green-500 text-2xl"></i>
-                </div>
+            <div class="py-2">
+              <a id="profileLinkedinBtn" href="#" target="_blank" rel="noopener noreferrer"
+                 class="w-full block px-4 py-2 hover:bg-gray-50 text-blue-600">🔗 Voir mon profil LinkedIn</a>
+              <button class="w-full text-left px-4 py-2 hover:bg-gray-50" onclick="editProfile()">✏️ Modifier mon profil</button>
+              <button class="w-full text-left px-4 py-2 hover:bg-gray-50" onclick="openStats()">📊 Mes statistiques</button>
+              <button class="w-full text-left px-4 py-2 hover:bg-gray-50" onclick="exportData()">⬇️ Exporter mes données</button>
+              <hr class="my-2">
+              <button class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600" onclick="logout()">🚪 Se déconnecter</button>
             </div>
-            
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm">Taux Engagement</p>
-                        <p class="text-2xl font-bold text-gray-800" id="engagementRate">0%</p>
-                    </div>
-                    <i class="fas fa-heart text-purple-500 text-2xl"></i>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-orange-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm">Score Autorité</p>
-                        <p class="text-2xl font-bold text-gray-800" id="authorityScore">0</p>
-                    </div>
-                    <i class="fas fa-crown text-orange-500 text-2xl"></i>
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </header>
 
-        <!-- Modules Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Module Frameworks de Contenu -->
-            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100 framework-card">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mr-4">
-                        <i class="fas fa-magic text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-800">Frameworks de Contenu</h3>
-                        <p class="text-gray-600">Templates qui convertissent</p>
-                    </div>
-                </div>
-                <p class="text-gray-700 mb-4">Utilisez des frameworks éprouvés pour créer du contenu viral et engageant qui génère des leads.</p>
-                <div class="flex flex-wrap gap-2 mb-4">
-                    <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">🍋 Citron Pressé</span>
-                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">🔄 Reverse</span>
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">🎯 AIDA</span>
-                </div>
-                <button onclick="openFrameworkGenerator()" class="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-6 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold">
-                    Choisir un Framework
-                </button>
-            </div>
-
-            <!-- Module Générateur de Contenu -->
-            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-4">
-                        <i class="fas fa-robot text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-800">Générateur IA</h3>
-                        <p class="text-gray-600">Contenu personnalisé</p>
-                    </div>
-                </div>
-                <p class="text-gray-700 mb-4">Créez du contenu personnalisé basé sur votre secteur et vos objectifs business.</p>
-                <div class="flex flex-wrap gap-2 mb-4">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">IA Avancée</span>
-                    <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Personnalisé</span>
-                </div>
-                <button onclick="openContentModal()" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-semibold">
-                    Générer du Contenu
-                </button>
-            </div>
-
-            <!-- Module Prospection -->
-            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg flex items-center justify-center mr-4">
-                        <i class="fas fa-search text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-800">Prospection Intelligente</h3>
-                        <p class="text-gray-600">Trouvez vos clients idéaux</p>
-                    </div>
-                </div>
-                <p class="text-gray-700 mb-4">Identifiez et contactez vos prospects qualifiés avec des messages personnalisés.</p>
-                <div class="flex flex-wrap gap-2 mb-4">
-                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">Ciblage Précis</span>
-                    <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm">Messages Auto</span>
-                </div>
-                <button onclick="startProspection()" class="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white py-3 px-6 rounded-lg hover:from-green-600 hover:to-teal-600 transition-all duration-300 font-semibold">
-                    Lancer la Prospection
-                </button>
-            </div>
-
-            <!-- Module Optimiseur de Contenu -->
-            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center mr-4">
-                        <i class="fas fa-chart-line text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-800">Optimiseur de Contenu</h3>
-                        <p class="text-gray-600">Améliorez vos posts</p>
-                    </div>
-                </div>
-                <p class="text-gray-700 mb-4">Analysez et optimisez votre contenu existant pour maximiser l'engagement et les conversions.</p>
-                <div class="flex flex-wrap gap-2 mb-4">
-                    <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">Analyse SEO</span>
-                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">Suggestions</span>
-                </div>
-                <button onclick="openOptimizer()" class="w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-3 px-6 rounded-lg hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 font-semibold">
-                    Optimiser mon Contenu
-                </button>
-            </div>
-
-            <!-- Module Constructeur d'Autorité -->
-            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-4">
-                        <i class="fas fa-crown text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-800">Constructeur d'Autorité</h3>
-                        <p class="text-gray-600">Positionnement expert</p>
-                    </div>
-                </div>
-                <p class="text-gray-700 mb-4">Créez du contenu thought leadership qui établit votre expertise et attire les prospects qualifiés.</p>
-                <div class="flex flex-wrap gap-2 mb-4">
-                    <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Thought Leadership</span>
-                    <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm">Expertise</span>
-                </div>
-                <button onclick="generateAuthorityContent()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-6 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 font-semibold">
-                    Créer du Contenu d'Expert
-                </button>
-            </div>
-
-            <!-- Module Pipeline de Vente -->
-            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center mr-4">
-                        <i class="fas fa-funnel-dollar text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-800">Pipeline de Vente</h3>
-                        <p class="text-gray-600">Convertissez vos leads</p>
-                    </div>
-                </div>
-                <p class="text-gray-700 mb-4">Gérez votre pipeline de vente et transformez vos connexions LinkedIn en clients payants.</p>
-                <div class="flex flex-wrap gap-2 mb-4">
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">CRM Intégré</span>
-                    <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">Suivi Ventes</span>
-                </div>
-                <button onclick="managePipeline()" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 font-semibold">
-                    Gérer mon Pipeline
-                </button>
-            </div>
+  <!-- Top Stats -->
+  <section class="max-w-7xl mx-auto px-4 mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+    <button onclick="showSection('editor')" class="card rounded-xl p-5 border hover:shadow-lg transition text-left">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Posts créés</p>
+          <p id="postsCount" class="text-2xl font-extrabold">0</p>
         </div>
-    </main>
-
-    <!-- Modal Frameworks de Contenu -->
-    <div id="frameworkModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-2xl font-bold text-gray-800">🎯 Frameworks de Contenu Viral</h2>
-                        <button onclick="closeFrameworkModal()" class="text-gray-500 hover:text-gray-700">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                        <!-- Framework Citron Pressé -->
-                        <div class="border-2 border-yellow-200 rounded-lg p-4 hover:border-yellow-400 cursor-pointer transition-all framework-card" onclick="selectFramework('citron')">
-                            <div class="flex items-center mb-3">
-                                <span class="text-2xl mr-2">🍋</span>
-                                <h3 class="font-bold text-gray-800">CITRON PRESSÉ</h3>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Fail + Solution</p>
-                            <p class="text-xs text-gray-500">"J'ai perdu 1000€... Voici comment l'éviter"</p>
-                        </div>
-
-                        <!-- Framework Reverse Thinking -->
-                        <div class="border-2 border-blue-200 rounded-lg p-4 hover:border-blue-400 cursor-pointer transition-all framework-card" onclick="selectFramework('reverse')">
-                            <div class="flex items-center mb-3">
-                                <span class="text-2xl mr-2">🔄</span>
-                                <h3 class="font-bold text-gray-800">REVERSE THINKING</h3>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Casser les Mythes</p>
-                            <p class="text-xs text-gray-500">"Non, ce n'est pas compliqué... si tu connais ça"</p>
-                        </div>
-
-                        <!-- Framework Ignorance Assumée -->
-                        <div class="border-2 border-green-200 rounded-lg p-4 hover:border-green-400 cursor-pointer transition-all framework-card" onclick="selectFramework('ignorance')">
-                            <div class="flex items-center mb-3">
-                                <span class="text-2xl mr-2">🙈</span>
-                                <h3 class="font-bold text-gray-800">IGNORANCE ASSUMÉE</h3>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Confession Utile</p>
-                            <p class="text-xs text-gray-500">"Je ne sais pas... mais je fais mieux que les pros"</p>
-                        </div>
-
-                        <!-- Framework Kit de Survie -->
-                        <div class="border-2 border-purple-200 rounded-lg p-4 hover:border-purple-400 cursor-pointer transition-all framework-card" onclick="selectFramework('kit')">
-                            <div class="flex items-center mb-3">
-                                <span class="text-2xl mr-2">🛠️</span>
-                                <h3 class="font-bold text-gray-800">KIT DE SURVIE</h3>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Freebie qui Convertit</p>
-                            <p class="text-xs text-gray-500">"Je t'offre ma liste... MP 'GRATUIT'"</p>
-                        </div>
-
-                        <!-- Framework AIDA -->
-                        <div class="border-2 border-red-200 rounded-lg p-4 hover:border-red-400 cursor-pointer transition-all framework-card" onclick="selectFramework('aida')">
-                            <div class="flex items-center mb-3">
-                                <span class="text-2xl mr-2">🎯</span>
-                                <h3 class="font-bold text-gray-800">AIDA</h3>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Attention → Action</p>
-                            <p class="text-xs text-gray-500">Attention, Intérêt, Désir, Action</p>
-                        </div>
-
-                        <!-- Framework PAS -->
-                        <div class="border-2 border-orange-200 rounded-lg p-4 hover:border-orange-400 cursor-pointer transition-all framework-card" onclick="selectFramework('pas')">
-                            <div class="flex items-center mb-3">
-                                <span class="text-2xl mr-2">🔥</span>
-                                <h3 class="font-bold text-gray-800">PAS</h3>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Problème → Solution</p>
-                            <p class="text-xs text-gray-500">Problème, Agitation, Solution</p>
-                        </div>
-
-                        <!-- Framework BAB -->
-                        <div class="border-2 border-teal-200 rounded-lg p-4 hover:border-teal-400 cursor-pointer transition-all framework-card" onclick="selectFramework('bab')">
-                            <div class="flex items-center mb-3">
-                                <span class="text-2xl mr-2">🌉</span>
-                                <h3 class="font-bold text-gray-800">BAB</h3>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Before → After → Bridge</p>
-                            <p class="text-xs text-gray-500">Transformation visible</p>
-                        </div>
-
-                        <!-- Framework STAR -->
-                        <div class="border-2 border-pink-200 rounded-lg p-4 hover:border-pink-400 cursor-pointer transition-all framework-card" onclick="selectFramework('star')">
-                            <div class="flex items-center mb-3">
-                                <span class="text-2xl mr-2">⭐</span>
-                                <h3 class="font-bold text-gray-800">STAR</h3>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Situation → Résultat</p>
-                            <p class="text-xs text-gray-500">Storytelling structuré</p>
-                        </div>
-
-                        <!-- Framework MIEL -->
-                        <div class="border-2 border-amber-200 rounded-lg p-4 hover:border-amber-400 cursor-pointer transition-all framework-card" onclick="selectFramework('miel')">
-                            <div class="flex items-center mb-3">
-                                <span class="text-2xl mr-2">🍯</span>
-                                <h3 class="font-bold text-gray-800">MIEL</h3>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Moment → Leçon</p>
-                            <p class="text-xs text-gray-500">Insight émotionnel</p>
-                        </div>
-                    </div>
-
-                    <!-- Zone de génération -->
-                    <div id="frameworkGenerator" class="hidden">
-                        <div class="bg-gray-50 rounded-lg p-6">
-                            <h3 class="text-lg font-bold mb-4">Génération avec le framework <span id="selectedFramework" class="text-blue-600"></span></h3>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ton sujet/secteur</label>
-                                    <input type="text" id="frameworkTopic" placeholder="Ex: e-commerce, coaching, immobilier..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ton objectif</label>
-                                    <select id="frameworkGoal" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                        <option value="leads">Générer des leads</option>
-                                        <option value="engagement">Augmenter l'engagement</option>
-                                        <option value="vente">Vendre un produit/service</option>
-                                        <option value="autorite">Établir son autorité</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Détails spécifiques (optionnel)</label>
-                                <textarea id="frameworkDetails" placeholder="Ajoute des détails sur ton expérience, ton produit, ton audience..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="3"></textarea>
-                            </div>
-
-                            <button onclick="generateFrameworkContent()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-semibold">
-                                🚀 Générer le Contenu
-                            </button>
-                        </div>
-
-                        <div id="frameworkResult" class="mt-6 hidden">
-                            <div class="bg-white border border-gray-200 rounded-lg p-6">
-                                <div class="flex justify-between items-center mb-4">
-                                    <h4 class="text-lg font-bold text-gray-800">Contenu Généré</h4>
-                                    <div class="flex space-x-2">
-                                        <button onclick="optimizeFrameworkContent()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all">
-                                            <i class="fas fa-magic mr-2"></i>Optimiser
-                                        </button>
-                                        <button onclick="copyFrameworkContent()" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all">
-                                            <i class="fas fa-copy mr-2"></i>Copier
-                                        </button>
-                                    </div>
-                                </div>
-                                <div id="frameworkOutput" class="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap font-medium leading-relaxed"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <span class="badge text-white text-lg px-3 py-2 rounded-lg">📝</span>
+      </div>
+    </button>
+    <button onclick="showSection('prospects')" class="card rounded-xl p-5 border hover:shadow-lg transition text-left">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Leads générés</p>
+          <p id="leadsCount" class="text-2xl font-extrabold">0</p>
         </div>
+        <span class="badge text-white text-lg px-3 py-2 rounded-lg">🧲</span>
+      </div>
+    </button>
+    <button onclick="openStats()" class="card rounded-xl p-5 border hover:shadow-lg transition text-left">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Taux d’engagement</p>
+          <p id="engagementRate" class="text-2xl font-extrabold">0%</p>
+        </div>
+        <span class="badge text-white text-lg px-3 py-2 rounded-lg">💖</span>
+      </div>
+    </button>
+    <button onclick="showSection('editor')" class="card rounded-xl p-5 border hover:shadow-lg transition text-left">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Score d’autorité</p>
+          <p id="authorityScore" class="text-2xl font-extrabold">0</p>
+        </div>
+        <span class="badge text-white text-lg px-3 py-2 rounded-lg">👑</span>
+      </div>
+    </button>
+  </section>
+
+  <!-- Main Grid -->
+  <main class="max-w-7xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 pb-20">
+    <!-- Left Column: Modules -->
+    <div class="lg:col-span-1 space-y-6">
+      <!-- Frameworks -->
+      <div class="card rounded-2xl p-6 border shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-12 h-12 rounded-xl flex items-center justify-center text-white btn-warm">✨</span>
+          <div>
+            <h3 class="font-bold text-lg">Frameworks de Contenu</h3>
+            <p class="text-sm text-gray-600">Templates qui convertissent</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-3 py-1 rounded-full tag">🍋 Citron</span>
+          <span class="px-3 py-1 rounded-full tag2">🔄 Reverse</span>
+          <span class="px-3 py-1 rounded-full tag3">🎯 AIDA</span>
+        </div>
+        <button class="w-full btn-warm text-white py-3 rounded-lg font-semibold" onclick="openFrameworkGenerator()">Choisir un Framework</button>
+      </div>
+
+      <!-- Générateur IA -->
+      <div class="card rounded-2xl p-6 border shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-12 h-12 rounded-xl flex items-center justify-center text-white btn-gradient">🤖</span>
+          <div>
+            <h3 class="font-bold text-lg">Générateur IA</h3>
+            <p class="text-sm text-gray-600">Crée un brouillon à partir d’un sujet</p>
+          </div>
+        </div>
+        <button class="w-full btn-gradient text-white py-3 rounded-lg font-semibold" onclick="openContentModal()">Générer du contenu</button>
+      </div>
+
+      <!-- Prospection -->
+      <div class="card rounded-2xl p-6 border shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-12 h-12 rounded-xl flex items-center justify-center text-white badge">🔎</span>
+          <div>
+            <h3 class="font-bold text-lg">Prospection intelligente</h3>
+            <p class="text-sm text-gray-600">Trouve et affiche tes leads</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <button class="btn-gradient text-white py-2 rounded-lg" onclick="startProspection()">Lancer</button>
+          <button class="pill py-2 rounded-lg hover:bg-white/90" onclick="showSection('prospects')">Voir les leads</button>
+        </div>
+      </div>
+
+      <!-- Autorité -->
+      <div class="card rounded-2xl p-6 border shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background:linear-gradient(90deg,#a855f7,#ec4899)">👑</span>
+          <div>
+            <h3 class="font-bold text-lg">Constructeur d’autorité</h3>
+            <p class="text-sm text-gray-600">Insère le sujet directement dans l’éditeur</p>
+          </div>
+        </div>
+        <button class="w-full text-white py-3 rounded-lg font-semibold" style="background:linear-gradient(90deg,#a855f7,#ec4899)" onclick="generateAuthorityContent()">Créer du contenu d’expert</button>
+      </div>
+
+      <!-- Pipeline -->
+      <div class="card rounded-2xl p-6 border shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background:linear-gradient(90deg,#f59e0b,#ef4444)">🧮</span>
+          <div>
+            <h3 class="font-bold text-lg">Pipeline de vente</h3>
+            <p class="text-sm text-gray-600">Voir les opportunités en direct</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <button class="btn-warm text-white py-2 rounded-lg" onclick="managePipeline()">Actualiser</button>
+          <button class="pill py-2 rounded-lg hover:bg-white/90" onclick="showSection('pipeline')">Voir pipeline</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Modal Optimiseur -->
-    <div id="optimizerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-2xl font-bold text-gray-800">🚀 Optimiseur de Contenu</h2>
-                        <button onclick="closeOptimizerModal()" class="text-gray-500 hover:text-gray-700">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="p-6">
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Collez votre contenu à optimiser</label>
-                        <textarea id="contentToOptimize" placeholder="Collez ici le contenu que vous voulez améliorer..." class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="8"></textarea>
-                    </div>
-
-                    <button onclick="analyzeContent()" class="bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-6 py-3 rounded-lg hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 font-semibold mb-6">
-                        🔍 Analyser et Optimiser
-                    </button>
-
-                    <div id="optimizationResults" class="hidden">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-                                <h3 class="font-bold text-red-800 mb-3">❌ Points à améliorer</h3>
-                                <div id="improvementPoints" class="space-y-2"></div>
-                            </div>
-                            
-                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                                <h3 class="font-bold text-green-800 mb-3">✅ Suggestions d'amélioration</h3>
-                                <div id="suggestions" class="space-y-2"></div>
-                            </div>
-                        </div>
-
-                        <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <h3 class="font-bold text-blue-800 mb-3">🎯 Version Optimisée</h3>
-                            <div id="optimizedContent" class="bg-white p-4 rounded border whitespace-pre-wrap"></div>
-                            <button onclick="copyOptimizedContent()" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all">
-                                <i class="fas fa-copy mr-2"></i>Copier la version optimisée
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Right: Working Area -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Editor -->
+      <section id="section-editor" class="card rounded-2xl p-6 border shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-bold text-lg">Éditeur en direct</h3>
+          <div class="flex gap-2">
+            <button class="pill px-3 py-2 rounded-lg hover:bg-white/90" onclick="insertHashtags()"># Hashtags</button>
+            <button class="pill px-3 py-2 rounded-lg hover:bg-white/90" onclick="insertCTA()">+ CTA</button>
+            <button class="btn-gradient text-white px-3 py-2 rounded-lg" onclick="optimizeCurrentEditor()">Optimiser</button>
+            <button class="px-3 py-2 rounded-lg border hover:bg-gray-50" onclick="copyEditor()">Copier</button>
+          </div>
         </div>
-    </div>
+        <textarea id="editor" rows="12" class="w-full p-4 border rounded-xl focus-ring mono" placeholder="Écris librement ici, ou utilise un framework pour pré-remplir."></textarea>
+        <p id="editorHint" class="text-sm text-gray-600 mt-2">Astuce: clique sur “Optimiser” pour remplir automatiquement les zones entre [crochets] comme [Étape 1], [Stratégie alternative 1], etc.</p>
+      </section>
 
-    <!-- Modal Profil -->
-    <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl max-w-2xl w-full">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-2xl font-bold text-gray-800">👤 Mon Profil</h2>
-                        <button onclick="closeProfileModal()" class="text-gray-500 hover:text-gray-700">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Nom complet</label>
-                            <input type="text" id="editName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Secteur d'activité</label>
-                            <input type="text" id="editSector" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Objectif principal</label>
-                            <select id="editGoal" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="leads">Générer des leads</option>
-                                <option value="ventes">Augmenter les ventes</option>
-                                <option value="autorite">Établir mon autorité</option>
-                                <option value="reseau">Développer mon réseau</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Zone géographique</label>
-                            <select id="editZone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="france">France métropolitaine</option>
-                                <option value="international">International</option>
-                                <option value="domtom">DOM-TOM</option>
-                                <option value="europe">Europe</option>
-                                <option value="afrique">Afrique</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Lien de profil LinkedIn</label>
-                            <input type="url" id="editLinkedin" placeholder="https://www.linkedin.com/in/ton-profil" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-                            <p class="text-xs text-gray-500 mt-1">Ex: https://www.linkedin.com/in/prenom-nom</p>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Audience cible</label>
-                        <textarea id="editAudience" placeholder="Décrivez votre audience idéale..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="3"></textarea>
-                    </div>
-
-                    <div class="flex justify-end space-x-3 mt-6">
-                        <button onclick="closeProfileModal()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all">
-                            Annuler
-                        </button>
-                        <button onclick="saveProfile()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all">
-                            Sauvegarder
-                        </button>
-                    </div>
-                </div>
-            </div>
+      <!-- Prospects -->
+      <section id="section-prospects" class="card rounded-2xl p-6 border shadow-sm hidden-vis">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-bold text-lg">Leads détectés</h3>
+          <button class="pill px-3 py-2 rounded-lg hover:bg-white/90" onclick="clearProspects()">Vider</button>
         </div>
+        <div id="prospectsEmpty" class="text-gray-600">Aucun lead pour le moment. Lance la prospection.</div>
+        <div id="prospectsList" class="hidden-vis">
+          <div class="overflow-x-auto border rounded-xl">
+            <table class="w-full text-left">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-2">Nom</th>
+                  <th class="px-4 py-2">Secteur</th>
+                  <th class="px-4 py-2">Score</th>
+                  <th class="px-4 py-2"></th>
+                </tr>
+              </thead>
+              <tbody id="prospectsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pipeline -->
+      <section id="section-pipeline" class="card rounded-2xl p-6 border shadow-sm hidden-vis">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-bold text-lg">Pipeline d’opportunités</h3>
+          <button class="pill px-3 py-2 rounded-lg hover:bg-white/90" onclick="clearDeals()">Vider</button>
+        </div>
+        <div id="pipelineEmpty" class="text-gray-600">Aucune opportunité pour le moment.</div>
+        <div id="pipelineList" class="hidden-vis">
+          <div class="overflow-x-auto border rounded-xl">
+            <table class="w-full text-left">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-2">Client</th>
+                  <th class="px-4 py-2">Valeur</th>
+                  <th class="px-4 py-2">Étape</th>
+                  <th class="px-4 py-2">Action</th>
+                </tr>
+              </thead>
+              <tbody id="pipelineTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </div>
+  </main>
 
-    <script>
-        // Variables globales
-        let userProfile = {
-            name: 'Utilisateur',
-            sector: 'Non défini',
-            goal: 'leads',
-            zone: 'france',
-            audience: '',
-            linkedin: ''
-        };
+  <!-- Modals -->
+  <!-- Frameworks Modal -->
+  <div id="frameworkModal" class="fixed inset-0 bg-black/50 hidden z-50">
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="card rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b flex items-center justify-between">
+          <h2 class="text-xl font-extrabold">🎯 Frameworks de Contenu Viral</h2>
+          <button class="px-3 py-2 rounded-lg hover:bg-gray-50" onclick="closeFrameworkModal()">✖</button>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="border-2 rounded-xl p-4 hover:border-yellow-400 transition cursor-pointer" onclick="selectFramework('citron')">
+              <div class="font-bold mb-1">🍋 CITRON PRESSÉ</div>
+              <div class="text-sm text-gray-600">Fail + Solution</div>
+            </div>
+            <div class="border-2 rounded-xl p-4 hover:border-blue-400 transition cursor-pointer" onclick="selectFramework('reverse')">
+              <div class="font-bold mb-1">🔄 REVERSE THINKING</div>
+              <div class="text-sm text-gray-600">Casser les mythes</div>
+            </div>
+            <div class="border-2 rounded-xl p-4 hover:border-green-400 transition cursor-pointer" onclick="selectFramework('ignorance')">
+              <div class="font-bold mb-1">🙈 IGNORANCE ASSUMÉE</div>
+              <div class="text-sm text-gray-600">Confession utile</div>
+            </div>
+            <div class="border-2 rounded-xl p-4 hover:border-purple-400 transition cursor-pointer" onclick="selectFramework('kit')">
+              <div class="font-bold mb-1">🛠️ KIT DE SURVIE</div>
+              <div class="text-sm text-gray-600">Freebie qui convertit</div>
+            </div>
+            <div class="border-2 rounded-xl p-4 hover:border-red-400 transition cursor-pointer" onclick="selectFramework('aida')">
+              <div class="font-bold mb-1">🎯 AIDA</div>
+              <div class="text-sm text-gray-600">Attention → Action</div>
+            </div>
+            <div class="border-2 rounded-xl p-4 hover:border-orange-400 transition cursor-pointer" onclick="selectFramework('pas')">
+              <div class="font-bold mb-1">🔥 PAS</div>
+              <div class="text-sm text-gray-600">Problème → Solution</div>
+            </div>
+            <div class="border-2 rounded-xl p-4 hover:border-teal-400 transition cursor-pointer" onclick="selectFramework('bab')">
+              <div class="font-bold mb-1">🌉 BAB</div>
+              <div class="text-sm text-gray-600">Before → After → Bridge</div>
+            </div>
+            <div class="border-2 rounded-xl p-4 hover:border-pink-400 transition cursor-pointer" onclick="selectFramework('star')">
+              <div class="font-bold mb-1">⭐ STAR</div>
+              <div class="text-sm text-gray-600">Situation → Résultat</div>
+            </div>
+            <div class="border-2 rounded-xl p-4 hover:border-amber-400 transition cursor-pointer" onclick="selectFramework('miel')">
+              <div class="font-bold mb-1">🍯 MIEL</div>
+              <div class="text-sm text-gray-600">Moment → Leçon</div>
+            </div>
+          </div>
 
-        let stats = {
-            posts: 0,
-            leads: 0,
-            engagement: 0,
-            authority: 0
-        };
+          <div id="frameworkGenerator" class="hidden">
+            <div class="bg-gray-50 border rounded-xl p-4">
+              <h3 class="font-bold mb-3">Génération avec <span id="selectedFramework" class="k"></span></h3>
+              <div class="grid md:grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label class="text-sm">Ton sujet/secteur</label>
+                  <input id="frameworkTopic" class="w-full p-3 border rounded-xl focus-ring" placeholder="e-commerce, coaching, immobilier..."/>
+                </div>
+                <div>
+                  <label class="text-sm">Ton objectif</label>
+                  <select id="frameworkGoal" class="w-full p-3 border rounded-xl focus-ring">
+                    <option value="leads">Générer des leads</option>
+                    <option value="engagement">Augmenter l'engagement</option>
+                    <option value="vente">Vendre un produit/service</option>
+                    <option value="autorite">Établir son autorité</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="text-sm">Détails (optionnel)</label>
+                <textarea id="frameworkDetails" rows="3" class="w-full p-3 border rounded-xl focus-ring" placeholder="Ajoute des infos concrètes..."></textarea>
+              </div>
+              <button class="btn-gradient text-white px-4 py-3 rounded-lg" onclick="generateFrameworkContent()">🚀 Générer</button>
+            </div>
 
-        // Frameworks de contenu
-        const frameworks = {
-            citron: {
-                name: "🍋 CITRON PRESSÉ",
-                description: "Fail + Solution",
-                template: (topic, goal, details) => `🍋 J'ai fait cette ERREUR dans ${topic}... Voici comment l'éviter !
+            <div id="frameworkResult" class="mt-4 hidden">
+              <div class="card border rounded-xl p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <h4 class="font-bold">Contenu généré (éditable)</h4>
+                  <div class="flex gap-2">
+                    <button class="pill px-3 py-2 rounded-lg hover:bg-white/90" onclick="applyToEditor()">Insérer dans l’éditeur</button>
+                    <button class="btn-gradient text-white px-3 py-2 rounded-lg" onclick="optimizeFrameworkContent()">Optimiser</button>
+                    <button class="px-3 py-2 rounded-lg border hover:bg-gray-50" onclick="copyFrameworkContent()">Copier</button>
+                  </div>
+                </div>
+                <div id="frameworkOutput" class="bg-gray-50 p-3 rounded-lg whitespace-pre-wrap mono"></div>
+              </div>
+            </div>
+          </div>
 
-❌ Le problème que j'ai rencontré :
-${details || `[Décrivez votre échec/erreur dans ${topic}]`}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optimizer Modal -->
+  <div id="optimizerModal" class="fixed inset-0 bg-black/50 hidden z-50">
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="card rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b flex items-center justify-between">
+          <h2 class="text-xl font-extrabold">🚀 Optimiseur de contenu</h2>
+          <button class="px-3 py-2 rounded-lg hover:bg-gray-50" onclick="closeOptimizerModal()">✖</button>
+        </div>
+        <div class="p-6">
+          <label class="text-sm">Colle ton contenu à optimiser</label>
+          <textarea id="contentToOptimize" rows="8" class="w-full p-4 border rounded-xl focus-ring" placeholder="Colle ton texte ici..."></textarea>
+          <button class="mt-3 btn-gradient text-white px-4 py-3 rounded-lg" onclick="analyzeContent()">🔍 Analyser & Optimiser</button>
+          <div id="optimizationResults" class="hidden mt-6">
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                <h3 class="font-bold text-red-800 mb-2">❌ À améliorer</h3>
+                <div id="improvementPoints" class="space-y-1 text-sm"></div>
+              </div>
+              <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+                <h3 class="font-bold text-green-800 mb-2">✅ Suggestions</h3>
+                <div id="suggestions" class="space-y-1 text-sm"></div>
+              </div>
+            </div>
+            <div class="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+              <h3 class="font-bold text-blue-800 mb-2">🎯 Version optimisée</h3>
+              <div id="optimizedContent" class="bg-white p-3 rounded border whitespace-pre-wrap mono"></div>
+              <button class="mt-3 btn-gradient text-white px-4 py-2 rounded-lg" onclick="copyOptimizedContent()">Copier</button>
+              <button class="mt-3 pill px-4 py-2 rounded-lg hover:bg-white/90" onclick="useOptimizedInEditor()">Insérer dans l’éditeur</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="fixed inset-0 bg-black/50 hidden z-50">
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="card rounded-2xl w-full max-w-2xl overflow-hidden">
+        <div class="p-6 border-b flex items-center justify-between">
+          <h2 class="text-xl font-extrabold">👤 Mon Profil</h2>
+          <button class="px-3 py-2 rounded-lg hover:bg-gray-50" onclick="closeProfileModal()">✖</button>
+        </div>
+        <div class="p-6">
+          <div class="grid md:grid-cols-2 gap-3">
+            <div>
+              <label class="text-sm">Nom complet</label>
+              <input id="editName" class="w-full p-3 border rounded-xl focus-ring" />
+            </div>
+            <div>
+              <label class="text-sm">Secteur d’activité</label>
+              <input id="editSector" class="w-full p-3 border rounded-xl focus-ring" />
+            </div>
+            <div>
+              <label class="text-sm">Objectif principal</label>
+              <select id="editGoal" class="w-full p-3 border rounded-xl focus-ring">
+                <option value="leads">Générer des leads</option>
+                <option value="ventes">Augmenter les ventes</option>
+                <option value="autorite">Établir mon autorité</option>
+                <option value="reseau">Développer mon réseau</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm">Zone géographique</label>
+              <select id="editZone" class="w-full p-3 border rounded-xl focus-ring">
+                <option value="france">France métropolitaine</option>
+                <option value="international">International</option>
+                <option value="domtom">DOM-TOM</option>
+                <option value="europe">Europe</option>
+                <option value="afrique">Afrique</option>
+              </select>
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm">Lien de profil LinkedIn</label>
+              <input id="editLinkedin" type="url" class="w-full p-3 border rounded-xl focus-ring" placeholder="https://www.linkedin.com/in/ton-profil" />
+              <p class="text-xs text-gray-600 mt-1">Ex: https://www.linkedin.com/in/prenom-nom</p>
+            </div>
+          </div>
+          <div class="mt-3">
+            <label class="text-sm">Audience cible</label>
+            <textarea id="editAudience" rows="3" class="w-full p-3 border rounded-xl focus-ring" placeholder="Décris ton audience idéale..."></textarea>
+          </div>
+          <div class="mt-5 flex justify-end gap-2">
+            <button class="px-4 py-2 rounded-lg border hover:bg-gray-50" onclick="closeProfileModal()">Annuler</button>
+            <button class="px-4 py-2 rounded-lg btn-gradient text-white" onclick="saveProfile()">Sauvegarder</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Generator Modal -->
+  <div id="contentModal" class="fixed inset-0 bg-black/50 hidden z-50">
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="card rounded-2xl w-full max-w-2xl">
+        <div class="p-6 border-b flex items-center justify-between">
+          <h2 class="text-xl font-extrabold">🤖 Générateur IA (brouillon)</h2>
+          <button class="px-3 py-2 rounded-lg hover:bg-gray-50" onclick="closeContentModal()">✖</button>
+        </div>
+        <div class="p-6">
+          <div class="grid gap-3">
+            <div>
+              <label class="text-sm">Sujet</label>
+              <input id="genTopic" class="w-full p-3 border rounded-xl focus-ring" placeholder="Ex: tunnel e-commerce, panier moyen..."/>
+            </div>
+            <div>
+              <label class="text-sm">Angle / idée</label>
+              <input id="genIdea" class="w-full p-3 border rounded-xl focus-ring" placeholder="Ex: 3 erreurs à éviter"/>
+            </div>
+            <div>
+              <label class="text-sm">Ton</label>
+              <select id="genTone" class="w-full p-3 border rounded-xl focus-ring">
+                <option value="clair">Clair & pédagogique</option>
+                <option value="percutant">Percutant & direct</option>
+                <option value="story">Storytelling</option>
+              </select>
+            </div>
+          </div>
+          <button class="mt-4 btn-gradient text-white px-4 py-3 rounded-lg" onclick="generateAI()">Générer</button>
+          <div id="genResultWrap" class="hidden mt-4">
+            <div class="bg-gray-50 border rounded-xl p-3 mono" id="genResult"></div>
+            <div class="mt-3 flex gap-2">
+              <button class="btn-gradient text-white px-4 py-2 rounded-lg" onclick="useGenInEditor()">Insérer dans l’éditeur</button>
+              <button class="px-4 py-2 rounded-lg border hover:bg-gray-50" onclick="copyGen()">Copier</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Simple Modal -->
+  <div id="statsModal" class="fixed inset-0 bg-black/50 hidden z-50">
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="card rounded-2xl w-full max-w-xl">
+        <div class="p-6 border-b flex items-center justify-between">
+          <h2 class="text-xl font-extrabold">📊 Statistiques</h2>
+          <button class="px-3 py-2 rounded-lg hover:bg-gray-50" onclick="closeStats()">✖</button>
+        </div>
+        <div class="p-6 grid grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-blue-50 border"><div class="text-sm text-gray-600">Posts</div><div id="sPosts" class="text-2xl font-extrabold">0</div></div>
+          <div class="p-4 rounded-xl bg-green-50 border"><div class="text-sm text-gray-600">Leads</div><div id="sLeads" class="text-2xl font-extrabold">0</div></div>
+          <div class="p-4 rounded-xl bg-purple-50 border"><div class="text-sm text-gray-600">Engagement</div><div id="sEng" class="text-2xl font-extrabold">0%</div></div>
+          <div class="p-4 rounded-xl bg-amber-50 border"><div class="text-sm text-gray-600">Autorité</div><div id="sAuth" class="text-2xl font-extrabold">0</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let userProfile = { name:'Utilisateur', sector:'Non défini', goal:'leads', zone:'france', audience:'', linkedin:'' };
+    let stats = { posts:0, leads:0, engagement:0, authority:0 };
+    let prospects = [];
+    let deals = [];
+
+    // Frameworks
+    const frameworks = {
+      citron: {
+        name:"🍋 CITRON PRESSÉ",
+        template:(topic,goal,details)=>`🍋 J'ai fait cette ERREUR dans ${topic}... Voici comment l'éviter !
+
+❌ Le problème :
+${details || '[Décrivez votre échec dans ' + topic + ']'}
 
 💡 Ce que j'ai appris :
 • [Leçon 1]
-• [Leçon 2] 
+• [Leçon 2]
 • [Leçon 3]
 
-✅ Ma solution maintenant :
-[Votre méthode/processus amélioré]
+✅ Ma solution :
+• [Étape 1]
+• [Étape 2]
+• [Étape 3]
 
 🎯 Résultat :
-[Bénéfice concret obtenu]
+[Résultat concret]
 
-💬 Et vous, avez-vous déjà fait cette erreur ?
+👉 Tu as déjà vécu ça ?`
+      },
+      reverse: {
+        name:"🔄 REVERSE THINKING",
+        template:(topic,goal,details)=>`🔄 STOP : On se trompe sur ${topic}
 
-#${topic.replace(/\s+/g, '')} #Entrepreneuriat #Conseils`
-            },
-            reverse: {
-                name: "🔄 REVERSE THINKING",
-                description: "Casser les Mythes",
-                template: (topic, goal, details) => `🔄 STOP ! Tout le monde se trompe sur ${topic}
+❌ Croyance :
+"[Croyance populaire]"
 
-❌ Ce qu'on vous dit :
-"[Croyance populaire dans votre secteur]"
+✅ Réalité :
+${details || '[Ta vérité + preuve]'}
 
-✅ La VRAIE réalité :
-${details || `[Votre vision contraire avec preuves]`}
-
-🔍 Pourquoi cette différence ?
+Pourquoi ?
 • [Raison 1]
 • [Raison 2]
 • [Raison 3]
 
-💰 Ce que ça change concrètement :
-[Bénéfice/économie/gain]
+Conseil :
+[Recommandation actionnable]`
+      },
+      ignorance: {
+        name:"🙈 IGNORANCE ASSUMÉE",
+        template:(topic,goal,details)=>`🙈 CONFESSION : Je ne maîtrise pas tout en ${topic}... et ça m'aide.
 
-🎯 Mon conseil :
-[Votre recommandation alternative]
+Ce que je ne sais pas faire :
+${details || '[Avoue une limite honnête]'}
 
-💬 Êtes-vous d'accord avec cette approche ?
-
-#${topic.replace(/\s+/g, '')} #Innovation #Disruption`
-            },
-            ignorance: {
-                name: "🙈 IGNORANCE ASSUMÉE",
-                description: "Confession Utile",
-                template: (topic, goal, details) => `🙈 CONFESSION : Je ne maîtrise pas tout en ${topic}...
-
-Et c'est exactement pourquoi je réussis mieux !
-
-❌ Ce que je ne sais PAS faire :
-${details || `[Avouez vos limites dans ${topic}]`}
-
-✅ Mais voici ce que je fais À LA PLACE :
+À la place, je fais :
 • [Stratégie alternative 1]
 • [Stratégie alternative 2]
 • [Stratégie alternative 3]
 
-🎯 Résultat surprenant :
-[Votre succès malgré vos "lacunes"]
+Résultat :
+[Succès concret malgré tout]`
+      },
+      kit: {
+        name:"🛠️ KIT DE SURVIE",
+        template:(topic,goal,details)=>`🛠️ CADEAU ${topic} (GRATUIT)
 
-💡 La leçon :
-Parfois, ne pas tout savoir nous force à être plus créatifs !
-
-💬 Vous aussi, vous avez des "lacunes" qui sont devenues des forces ?
-
-#${topic.replace(/\s+/g, '')} #Authenticité #Mindset`
-            },
-            kit: {
-                name: "🛠️ KIT DE SURVIE",
-                description: "Freebie qui Convertit",
-                template: (topic, goal, details) => `🛠️ CADEAU : Mon kit de survie ${topic} (100% GRATUIT)
-
-🎁 Ce que vous recevez :
+Tu recevras :
 • [Ressource 1]
 • [Ressource 2]
 • [Ressource 3]
-• [Bonus surprise]
 
-✅ Parfait si vous voulez :
-${details || `[Bénéfices spécifiques pour ${topic}]`}
+Parfait si :
+${details || '[Cas d’usage précis]'}
 
-⚡ Utilisable immédiatement :
-[Promesse de résultat rapide]
-
-🔥 Valeur réelle : [X]€
-👉 Votre prix : 0€
-
-💌 Pour le recevoir :
-Commentez "KIT" et je vous l'envoie en MP !
-
-⏰ Disponible 48h seulement
-
-#${topic.replace(/\s+/g, '')} #Gratuit #Ressources`
-            },
-            aida: {
-                name: "🎯 AIDA",
-                description: "Attention → Action",
-                template: (topic, goal, details) => `🚨 ATTENTION : Ceci va changer votre approche du ${topic}
+👉 Commente "KIT" et je t’envoie ça.`
+      },
+      aida: {
+        name:"🎯 AIDA",
+        template:(topic,goal,details)=>`🚨 ATTENTION : ${topic} autrement
 
 💡 INTÉRÊT :
-${details || `[Statistique/fait surprenant sur ${topic}]`}
+${details || '[Stat/insight surprenant]'}
 
 🔥 DÉSIR :
-Imaginez si vous pouviez :
 • [Bénéfice 1]
-• [Bénéfice 2] 
+• [Bénéfice 2]
 • [Bénéfice 3]
 
 ✅ ACTION :
-Voici exactement comment faire :
-[Étape 1]
-[Étape 2]
-[Étape 3]
+• [Étape 1]
+• [Étape 2]
+• [Étape 3]`
+      },
+      pas: {
+        name:"🔥 PAS",
+        template:(topic,goal,details)=>`🔥 PROBLÈME en ${topic} :
+${details || '[Frustrations concrètes]'}
 
-🎯 Résultat garanti :
-[Promesse de résultat]
-
-👉 Prêt(e) à essayer ? Dites-moi en commentaire !
-
-#${topic.replace(/\s+/g, '')} #Action #Résultats`
-            },
-            pas: {
-                name: "🔥 PAS",
-                description: "Problème → Solution",
-                template: (topic, goal, details) => `🔥 PROBLÈME : Vous galérez avec ${topic} ?
-
-😤 Ça vous énerve aussi quand :
-${details || `[Frustrations communes dans ${topic}]`}
-
-⚡ Ça empire parce que :
+⚡ AGITATION :
 • [Conséquence 1]
 • [Conséquence 2]
-• [Conséquence 3]
-
-💰 Coût de l'inaction :
-[Ce que ça coûte de ne rien faire]
 
 ✅ SOLUTION :
-Voici ma méthode en 3 étapes :
-[Étape 1]
-[Étape 2]
-[Étape 3]
-
-🎯 Résultat :
-[Transformation obtenue]
-
-💬 Vous reconnaissez-vous dans ce problème ?
-
-#${topic.replace(/\s+/g, '')} #Solution #Transformation`
-            },
-            bab: {
-                name: "🌉 BAB",
-                description: "Before → After → Bridge",
-                template: (topic, goal, details) => `🌉 AVANT vs APRÈS : Ma transformation ${topic}
-
-❌ AVANT :
-${details || `[Votre situation difficile dans ${topic}]`}
+• [Étape 1]
+• [Étape 2]
+• [Étape 3]`
+      },
+      bab: {
+        name:"🌉 BAB",
+        template:(topic,goal,details)=>`🌉 AVANT :
+${details || '[Situation compliquée]'}
 
 ✅ APRÈS :
-[Votre situation actuelle améliorée]
+[Situation idéale]
 
-🌉 LE PONT (comment j'y suis arrivé) :
-• [Changement clé 1]
-• [Changement clé 2]
-• [Changement clé 3]
-
-⏰ Temps nécessaire :
-[Durée de la transformation]
-
-💡 Le déclic :
-[Moment/réalisation qui a tout changé]
-
-🎯 Vous aussi vous pouvez :
-[Encouragement + première étape]
-
-💬 Où en êtes-vous dans votre parcours ?
-
-#${topic.replace(/\s+/g, '')} #Transformation #Avant-Après`
-            },
-            star: {
-                name: "⭐ STAR",
-                description: "Situation → Résultat",
-                template: (topic, goal, details) => `⭐ HISTOIRE VRAIE : Comment j'ai résolu ce défi ${topic}
-
-🎯 SITUATION :
-${details || `[Contexte/défi rencontré dans ${topic}]`}
+🌉 PONT :
+• [Changement 1]
+• [Changement 2]
+• [Changement 3]`
+      },
+      star: {
+        name:"⭐ STAR",
+        template:(topic,goal,details)=>`⭐ SITUATION :
+${details || '[Contexte]'}
 
 📋 TÂCHE :
-Ce que je devais accomplir :
-[Objectif précis]
+[Objectif]
 
 🚀 ACTION :
-Voici ce que j'ai fait :
 • [Action 1]
 • [Action 2]
 • [Action 3]
 
 🏆 RÉSULTAT :
-[Résultat concret obtenu]
-
-💡 Leçons apprises :
-[Insights pour les autres]
-
-🎯 Applicable pour vous si :
-[Conditions/contexte similaire]
-
-💬 Vous avez vécu une situation similaire ?
-
-#${topic.replace(/\s+/g, '')} #Storytelling #Résultats`
-            },
-            miel: {
-                name: "🍯 MIEL",
-                description: "Moment → Leçon",
-                template: (topic, goal, details) => `🍯 CE MOMENT qui a changé ma vision du ${topic}
-
-⏰ MOMENT :
-${details || `[Moment précis/anecdote dans ${topic}]`}
+[Résultat chiffré]`
+      },
+      miel: {
+        name:"🍯 MIEL",
+        template:(topic,goal,details)=>`🍯 MOMENT :
+${details || '[Petite histoire vraie]'}
 
 💡 INSIGHT :
-Ce que j'ai réalisé à cet instant :
 [Prise de conscience]
 
 ❤️ ÉMOTION :
-Ce que j'ai ressenti :
-[Émotion vécue]
+[Ce que j’ai ressenti]
 
 📚 LEÇON :
-Ce que ça m'a appris :
-• [Apprentissage 1]
-• [Apprentissage 2]
-• [Apprentissage 3]
+• [Leçon 1]
+• [Leçon 2]`
+      },
+    };
 
-🎯 Application concrète :
-[Comment utiliser cette leçon]
+    // UI helpers
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => document.querySelectorAll(sel);
 
-💫 Impact sur ma vie :
-[Changement durable]
+    function showNotification(message, type='info'){
+      const colors = {success:'bg-green-600', error:'bg-red-600', warning:'bg-amber-500', info:'bg-blue-600'};
+      const n = document.createElement('div');
+      n.className = `fixed top-4 right-4 ${colors[type]} text-white px-4 py-2 rounded-lg shadow-deep z-50`;
+      n.textContent = message;
+      document.body.appendChild(n);
+      setTimeout(()=>{ n.style.transform='translateX(120%)'; n.style.transition='transform .3s'; setTimeout(()=>n.remove(),300); }, 2500);
+    }
 
-💬 Quel moment a marqué votre parcours ?
+    // Profile menu
+    $('#profileBtn').addEventListener('click', ()=> $('#profileMenu').classList.toggle('hidden'));
+    document.addEventListener('click', (e)=>{
+      if(!e.target.closest('#profileBtn') && !e.target.closest('#profileMenu')){
+        $('#profileMenu').classList.add('hidden');
+      }
+    });
 
-#${topic.replace(/\s+/g, '')} #Inspiration #Leçon`
-            }
-        };
+    // Sections
+    function showSection(key){
+      const map = {
+        editor: '#section-editor',
+        prospects: '#section-prospects',
+        pipeline: '#section-pipeline'
+      };
+      Object.values(map).forEach(sel => $(sel).classList.add('hidden-vis'));
+      $(map[key]).classList.remove('hidden-vis');
+      if(key==='prospects'){ renderProspects(); }
+      if(key==='pipeline'){ renderDeals(); }
+      if(key==='editor'){ $('#editor').focus(); }
+    }
 
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            loadUserData();
-            updateStats();
-            updateProfileDisplay();
-        });
+    // Profile
+    function editProfile(){
+      $('#editName').value = userProfile.name;
+      $('#editSector').value = userProfile.sector;
+      $('#editGoal').value = userProfile.goal;
+      $('#editZone').value = userProfile.zone;
+      $('#editAudience').value = userProfile.audience;
+      $('#editLinkedin').value = userProfile.linkedin || '';
+      $('#profileModal').classList.remove('hidden');
+      $('#profileMenu').classList.add('hidden');
+    }
+    function closeProfileModal(){ $('#profileModal').classList.add('hidden'); }
+    function saveProfile(){
+      userProfile.name = $('#editName').value || 'Utilisateur';
+      userProfile.sector = $('#editSector').value || 'Non défini';
+      userProfile.goal = $('#editGoal').value;
+      userProfile.zone = $('#editZone').value;
+      userProfile.audience = $('#editAudience').value;
+      userProfile.linkedin = ($('#editLinkedin').value || '').trim();
 
-        // Gestion du profil
-        function toggleProfileMenu() {
-            const menu = document.getElementById('profileMenu');
-            menu.classList.toggle('hidden');
-        }
+      updateProfileDisplay();
+      saveUserData();
+      closeProfileModal();
+      showNotification('Profil mis à jour ✅','success');
+    }
+    function updateProfileDisplay(){
+      $('#userName').textContent = userProfile.name;
+      $('#profileName').textContent = userProfile.name;
+      $('#profileSector').textContent = userProfile.sector;
+      const linkBtn = $('#profileLinkedinBtn');
+      linkBtn.href = userProfile.linkedin || '#';
+      linkBtn.style.opacity = userProfile.linkedin ? '1':'0.5';
+      linkBtn.style.pointerEvents = userProfile.linkedin ? 'auto':'none';
+    }
 
-        function editProfile() {
-            document.getElementById('editName').value = userProfile.name;
-            document.getElementById('editSector').value = userProfile.sector;
-            document.getElementById('editGoal').value = userProfile.goal;
-            document.getElementById('editZone').value = userProfile.zone;
-            document.getElementById('editAudience').value = userProfile.audience;
-            document.getElementById('editLinkedin').value = userProfile.linkedin || '';
-            
-            document.getElementById('profileModal').classList.remove('hidden');
-            document.getElementById('profileMenu').classList.add('hidden');
-        }
+    // Stats
+    function updateStats(){
+      $('#postsCount').textContent = stats.posts;
+      $('#leadsCount').textContent = stats.leads;
+      $('#engagementRate').textContent = Math.min(stats.posts*2.5,100).toFixed(1)+'%';
+      $('#authorityScore').textContent = Math.min(stats.authority*10,100).toFixed(1);
+      // modal small
+      $('#sPosts').textContent = stats.posts;
+      $('#sLeads').textContent = stats.leads;
+      $('#sEng').textContent = $('#engagementRate').textContent;
+      $('#sAuth').textContent = $('#authorityScore').textContent;
+    }
+    function openStats(){ $('#statsModal').classList.remove('hidden'); }
+    function closeStats(){ $('#statsModal').classList.add('hidden'); }
 
-        function closeProfileModal() {
-            document.getElementById('profileModal').classList.add('hidden');
-        }
+    // Persistence
+    function saveUserData(){ localStorage.setItem('lms7', JSON.stringify({profile:userProfile, stats, prospects, deals})); }
+    function loadUserData(){
+      const raw = localStorage.getItem('lms7');
+      if(!raw) return;
+      try {
+        const d = JSON.parse(raw);
+        userProfile = {...userProfile, ...(d.profile||{})};
+        stats = {...stats, ...(d.stats||{})};
+        prospects = d.prospects || [];
+        deals = d.deals || [];
+      } catch(e){}
+    }
 
-        function saveProfile() {
-            userProfile.name = document.getElementById('editName').value || 'Utilisateur';
-            userProfile.sector = document.getElementById('editSector').value || 'Non défini';
-            userProfile.goal = document.getElementById('editGoal').value;
-            userProfile.zone = document.getElementById('editZone').value;
-            userProfile.audience = document.getElementById('editAudience').value;
-            userProfile.linkedin = (document.getElementById('editLinkedin').value || '').trim();
-            
-            saveUserData();
-            updateProfileDisplay();
-            closeProfileModal();
-            
-            showNotification('✅ Profil mis à jour avec succès !', 'success');
-        }
+    // Logout (sans navigation externe)
+    function logout(){
+      if(confirm('Te déconnecter ?')){
+        localStorage.removeItem('lms7');
+        userProfile = { name:'Utilisateur', sector:'Non défini', goal:'leads', zone:'france', audience:'', linkedin:'' };
+        stats = { posts:0, leads:0, engagement:0, authority:0 };
+        prospects = [];
+        deals = [];
+        updateProfileDisplay(); updateStats(); renderProspects(); renderDeals(); showSection('editor');
+        $('#editor').value = '';
+        showNotification('Déconnectée ✅','success');
+      }
+    }
 
-        function updateProfileDisplay() {
-            document.getElementById('userName').textContent = userProfile.name;
-            document.getElementById('profileName').textContent = userProfile.name;
-            document.getElementById('profileSector').textContent = userProfile.sector;
+    // Frameworks flow
+    function openFrameworkGenerator(){ $('#frameworkModal').classList.remove('hidden'); }
+    function closeFrameworkModal(){ $('#frameworkModal').classList.add('hidden'); }
+    function selectFramework(key){
+      $('#selectedFramework').textContent = frameworks[key].name;
+      $('#frameworkGenerator').classList.remove('hidden');
+      $('#frameworkResult').classList.add('hidden');
+      $('#frameworkTopic').focus();
+      $('#frameworkModal').dataset.type = key;
+    }
+    function generateFrameworkContent(){
+      const key = $('#frameworkModal').dataset.type;
+      const topic = $('#frameworkTopic').value.trim();
+      const goal = $('#frameworkGoal').value;
+      const details = $('#frameworkDetails').value.trim();
+      if(!key || !topic){ showNotification('Renseigne au moins le sujet ✍️','warning'); return; }
+      const raw = frameworks[key].template(topic, goal, details);
+      $('#frameworkOutput').textContent = raw;
+      $('#frameworkResult').classList.remove('hidden');
+      // Compte un brouillon créé
+      stats.posts++; updateStats(); saveUserData();
+      showNotification('Contenu généré ✅','success');
+    }
+    function applyToEditor(){
+      const txt = $('#frameworkOutput').textContent;
+      $('#editor').value = txt;
+      closeFrameworkModal();
+      showSection('editor');
+      showNotification('Texte inséré dans l’éditeur ✨','success');
+    }
 
-            // Met à jour/ajoute un lien rapide vers le profil LinkedIn dans le menu
-            const menu = document.getElementById('profileMenu');
-            let linkBtn = document.getElementById('profileLinkedinBtn');
-            if (!linkBtn) {
-                linkBtn = document.createElement('a');
-                linkBtn.id = 'profileLinkedinBtn';
-                linkBtn.className = 'w-full block px-4 py-2 hover:bg-gray-50 text-blue-600';
-                linkBtn.innerHTML = '<i class="fab fa-linkedin mr-2"></i>Voir mon profil LinkedIn';
-                linkBtn.target = '_blank';
-                linkBtn.rel = 'noopener noreferrer';
-                const container = menu.querySelector('.py-2');
-                container.insertBefore(linkBtn, container.firstChild);
-            }
-            linkBtn.href = userProfile.linkedin || '#';
-            linkBtn.style.opacity = userProfile.linkedin ? '1' : '0.5';
-            linkBtn.style.pointerEvents = userProfile.linkedin ? 'auto' : 'none';
-        }
+    // Optimisation ciblée: remplit les [crochets] intelligemment
+    function fillPlaceholders(text, topic, goal){
+      // règles simples pour proposer du concret
+      const linesFor = {
+        step: [
+          `Lister tes 3 priorités ${topic} et supprimer le reste`,
+          `Mettre en place un suivi simple (tableur + KPI)`,
+          `Tester 1 amélioration par semaine et mesurer`
+        ],
+        strat: [
+          `Je priorise l’écoute client (appels courts, 10mn)`,
+          `Je prototyp[e] en 24h au lieu de viser la perfection`,
+          `Je documente chaque test pour capitaliser`
+        ],
+        benefit: [
+          `Gagner +20% de portée en 14 jours`,
+          `Réduire le temps de production de 30%`,
+          `Clarifier l’offre et augmenter les réponses`
+        ],
+        reason: [
+          `Les coûts cachés sont sous-estimés`,
+          `La data est mieux qu’un avis`,
+          `Le timing compte plus que tu ne crois`
+        ],
+        resource: [
+          `Modèle de message LinkedIn (copier-coller)`,
+          `Checklist “post prêt à publier”`,
+          `Tableur de priorisation (ICE score)`
+        ],
+        lesson: [
+          `Commencer simple accélère tout`,
+          `Mesurer évite les illusions`,
+          `Demander du feedback tôt fait gagner du temps`
+        ],
+        result: [
+          `+38% d’engagement sur 4 posts`,
+          `3 RDV qualifiés en 7 jours`,
+          `2 ventes sans pub payante`
+        ]
+      };
 
-        function viewStats() {
-            showNotification('📊 Statistiques détaillées bientôt disponibles !', 'info');
-            document.getElementById('profileMenu').classList.add('hidden');
-        }
+      // déduire listes selon labels
+      function take(arr, n){ return arr.slice(0,n); }
 
-        function exportData() {
-            const data = {
-                profile: userProfile,
-                stats: stats,
-                exportDate: new Date().toISOString()
-            };
-            
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'linkedin-master-suite-data.json';
-            a.click();
-            
-            showNotification('📥 Données exportées avec succès !', 'success');
-            document.getElementById('profileMenu').classList.add('hidden');
-        }
+      // Remplacements ciblés
+      text = text.replace(/\[Étape\s*\d+\]/g, ()=> take(linesFor.step,1)[0]);
+      text = text.replace(/\[Stratégie alternative\s*\d+\]/g, ()=> take(linesFor.strat,1)[0]);
+      text = text.replace(/\[Bénéfice\s*\d+\]/g, ()=> take(linesFor.benefit,1)[0]);
+      text = text.replace(/\[Raison\s*\d+\]/g, ()=> take(linesFor.reason,1)[0]);
+      text = text.replace(/\[Ressource\s*\d+\]/g, ()=> take(linesFor.resource,1)[0]);
+      text = text.replace(/\[Leçon\s*\d+\]/g, ()=> take(linesFor.lesson,1)[0]);
+      text = text.replace(/\[Résultat.*?\]/g, ()=> linesFor.result[0]);
 
-        function logout() {
-            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
-                localStorage.clear();
-                window.location.hash = '#logout';
-                window.location.reload();
-            }
-        }
+      // Remplacer blocs génériques entre crochets
+      text = text.replace(/\[Décrivez.*?\]/gi, `Commande ratée chez un fournisseur → j’ai changé mon process`);
+      text = text.replace(/\[Ta vérité.*?\]/gi, `Importer n’est pas si complexe si tu valides 3 points: fournisseur, qualité, incoterms`);
+      text = text.replace(/\[Frustrations.*?\]/gi, `Beaucoup de vues mais peu de leads, temps de création trop long`);
+      text = text.replace(/\[Stat\/insight.*?\]/gi, `80% des résultats viennent de 20% des actions (pareto appliqué à ${topic})`);
+      text = text.replace(/\[Contexte\]/gi, `Client D2C en ${topic}, panier moyen en baisse`);
+      text = text.replace(/\[Petite histoire vraie\]/gi, `Un client m’a dit “je n’achète pas pour la fiche produit, mais pour la confiance”`);
+      text = text.replace(/\[Cas d’usage.*?\]/gi, `Lancer des posts réguliers qui amènent des conversations qualifiées`);
 
-        // Gestion des frameworks
-        function openFrameworkGenerator() {
-            document.getElementById('frameworkModal').classList.remove('hidden');
-        }
+      // Ajouter CTA/hashtags si absents
+      if(!/👉/g.test(text)) text += `\n\n👉 Dis-moi si tu veux que je partage mon modèle.`;
+      if(!/#/g.test(text)) text += `\n\n#${topic.replace(/\s+/g,'') } #Business #Conseils`;
 
-        function closeFrameworkModal() {
-            document.getElementById('frameworkModal').classList.add('hidden');
-            document.getElementById('frameworkGenerator').classList.add('hidden');
-        }
+      return text;
+    }
 
-        function selectFramework(type) {
-            const framework = frameworks[type];
-            document.getElementById('selectedFramework').textContent = framework.name;
-            document.getElementById('frameworkGenerator').classList.remove('hidden');
-            
-            // Scroll vers le générateur
-            document.getElementById('frameworkGenerator').scrollIntoView({ behavior: 'smooth' });
-        }
+    function optimizeFrameworkContent(){
+      const topic = $('#frameworkTopic').value.trim() || userProfile.sector || 'business';
+      const goal = $('#frameworkGoal').value;
+      let current = $('#frameworkOutput').textContent;
+      const optimized = fillPlaceholders(current, topic, goal);
+      $('#frameworkOutput').textContent = optimized;
+      showNotification('Zones remplies et texte structuré ✅','success');
+    }
 
-        function generateFrameworkContent() {
-            const topic = document.getElementById('frameworkTopic').value;
-            const goal = document.getElementById('frameworkGoal').value;
-            const details = document.getElementById('frameworkDetails').value;
-            const selectedType = document.getElementById('selectedFramework').textContent;
-            
-            if (!topic) {
-                showNotification('⚠️ Veuillez renseigner votre sujet/secteur', 'warning');
-                return;
-            }
+    // Editor helpers
+    function optimizeCurrentEditor(){
+      const topicGuess = (userProfile.sector && userProfile.sector!=='Non défini') ? userProfile.sector : 'business';
+      $('#editor').value = fillPlaceholders($('#editor').value || '', topicGuess, userProfile.goal);
+      showNotification('Optimisation appliquée dans l’éditeur ✅','success');
+    }
+    function insertHashtags(){
+      const topicGuess = (userProfile.sector && userProfile.sector!=='Non défini') ? userProfile.sector : 'business';
+      const add = `\n\n#${topicGuess.replace(/\s+/g,'')} #Marketing #Growth`;
+      if(!$('#editor').value.includes('#')) $('#editor').value += add;
+    }
+    function insertCTA(){
+      if(!$('#editor').value.includes('👉')) $('#editor').value += `\n\n👉 Dis-moi si tu veux l’exemple en DM.`;
+    }
+    function copyEditor(){
+      navigator.clipboard.writeText($('#editor').value || '').then(()=> showNotification('Contenu copié 📋','success'));
+    }
 
-            // Trouver le framework sélectionné
-            let frameworkType = null;
-            for (const [key, framework] of Object.entries(frameworks)) {
-                if (framework.name === selectedType) {
-                    frameworkType = key;
-                    break;
-                }
-            }
+    // AI Generator
+    function openContentModal(){ $('#contentModal').classList.remove('hidden'); }
+    function closeContentModal(){ $('#contentModal').classList.add('hidden'); }
+    function generateAI(){
+      const t = $('#genTopic').value.trim();
+      const i = $('#genIdea').value.trim() || '3 points clés';
+      const tone = $('#genTone').value;
+      if(!t){ showNotification('Ajoute un sujet 😉','warning'); return; }
+      let draft = `💡 ${i} sur ${t}\n\n• [Point 1]\n• [Point 2]\n• [Point 3]\n\n👉 Intéressé(e) ? Dis-le en commentaire.`;
+      if(tone==='percutant') draft = draft.replace('💡', '⚡').replace(/\[Point \d\]/g, m => m.replace('Point','Tir'));
+      if(tone==='story') draft = `📖 Histoire vraie (${t})\n\nHier, [moment clé] → [déclic]\nCe que j’ai appris :\n• [Leçon 1]\n• [Leçon 2]\n\n👉 Tu veux la suite ?`;
+      $('#genResult').textContent = fillPlaceholders(draft, t, userProfile.goal);
+      $('#genResultWrap').classList.remove('hidden');
+    }
+    function useGenInEditor(){ $('#editor').value = $('#genResult').textContent; closeContentModal(); showSection('editor'); }
+    function copyGen(){ navigator.clipboard.writeText($('#genResult').textContent).then(()=> showNotification('Brouillon copié 📋','success')); }
 
-            if (frameworkType) {
-                const content = frameworks[frameworkType].template(topic, goal, details);
-                document.getElementById('frameworkOutput').textContent = content;
-                document.getElementById('frameworkResult').classList.remove('hidden');
-                
-                // Mettre à jour les stats
-                stats.posts++;
-                updateStats();
-                saveUserData();
-                
-                showNotification('🎉 Contenu généré avec succès !', 'success');
-            }
-        }
+    // Optimizer modal
+    function openOptimizer(){ $('#optimizerModal').classList.remove('hidden'); }
+    function closeOptimizerModal(){ $('#optimizerModal').classList.add('hidden'); }
+    function analyzeContent(){
+      const content = $('#contentToOptimize').value.trim();
+      if(!content){ showNotification('Colle un texte à analyser','warning'); return; }
+      const improvements = ['Hook faible','CTA flou','Paragraphes longs','Peu d’exemples concrets'];
+      const suggestions = ['Commence par une promesse chiffrée','Ajoute un CTA direct','Découpe en puces','Donne un exemple client'];
+      $('#improvementPoints').innerHTML = improvements.map(x=>`<div>• ${x}</div>`).join('');
+      $('#suggestions').innerHTML = suggestions.map(x=>`<div>• ${x}</div>`).join('');
+      let optimized = fillPlaceholders(content, userProfile.sector||'business', userProfile.goal);
+      if(!/^(\u{1F4A5}|\u{1F525}|\u{26A0}\u{FE0F}|🚨|⚡)/u.test(optimized)){ optimized = '🚨 ' + optimized;}
+      $('#optimizedContent').textContent = optimized;
+      $('#optimizationResults').classList.remove('hidden');
+      showNotification('Analyse terminée ✅','success');
+    }
+    function copyOptimizedContent(){ navigator.clipboard.writeText($('#optimizedContent').textContent).then(()=> showNotification('Version optimisée copiée 📋','success')); }
+    function useOptimizedInEditor(){ $('#editor').value = $('#optimizedContent').textContent; closeOptimizerModal(); showSection('editor'); }
 
-        function optimizeFrameworkContent() {
-            const currentContent = document.getElementById('frameworkOutput').textContent;
-            
-            // Simulation d'optimisation
-            const optimizations = [
-                '✨ Hook renforcé pour plus d\'impact',
-                '📈 Hashtags optimisés pour la portée',
-                '🎯 Call-to-action plus engageant',
-                '💡 Structure améliorée pour la lisibilité'
-            ];
-            
-            let optimizedContent = currentContent;
-            
-            // Ajouter des émojis si manquants
-            if (!optimizedContent.includes('👉')) {
-                optimizedContent += '\n\n👉 Sauvegardez ce post si il vous a plu !';
-            }
-            
-            document.getElementById('frameworkOutput').textContent = optimizedContent;
-            
-            showNotification('🚀 Contenu optimisé ! ' + optimizations[Math.floor(Math.random() * optimizations.length)], 'success');
-        }
+    // Authority
+    function generateAuthorityContent(){
+      const s = userProfile.sector==='Non défini' ? 'ton domaine' : userProfile.sector;
+      const topics = [
+        `💡 3 erreurs que je vois souvent en ${s}`,
+        `⚙️ Mon process ${s} en 4 étapes`,
+        `📊 Ce que disent vraiment les chiffres en ${s}`
+      ];
+      const t = topics[Math.floor(Math.random()*topics.length)];
+      const outline = `${t}\n\n• [Point 1]\n• [Point 2]\n• [Point 3]\n\n👉 Si tu veux le modèle, dis-le.`;
+      const filled = fillPlaceholders(outline, s, userProfile.goal);
+      $('#editor').value = filled;
+      stats.authority += 0.4; stats.posts++; updateStats(); saveUserData();
+      showSection('editor');
+      showNotification('Sujet inséré dans l’éditeur 👑','success');
+    }
 
-        function copyFrameworkContent() {
-            const content = document.getElementById('frameworkOutput').textContent;
-            navigator.clipboard.writeText(content).then(() => {
-                showNotification('📋 Contenu copié dans le presse-papier !', 'success');
-            });
-        }
+    // Prospection (affichage live)
+    function startProspection(){
+      const sample = [
+        { id: Date.now()+1, name:'Marie Dubois', sector:'E-commerce', score:92, linkedin:'https://www.linkedin.com' },
+        { id: Date.now()+2, name:'Nora Diop', sector:'Coaching', score:84, linkedin:'https://www.linkedin.com' },
+        { id: Date.now()+3, name:'Sophie Laurent', sector:'Tech', score:78, linkedin:'https://www.linkedin.com' }
+      ];
+      prospects = sample;
+      stats.leads = prospects.length; updateStats(); saveUserData();
+      renderProspects();
+      showSection('prospects');
+      showNotification(`${prospects.length} leads affichés ✅`,'success');
+    }
+    function renderProspects(){
+      const empty = $('#prospectsEmpty');
+      const wrap = $('#prospectsList');
+      const body = $('#prospectsTbody');
+      body.innerHTML = '';
+      if(!prospects.length){ empty.classList.remove('hidden-vis'); wrap.classList.add('hidden-vis'); return; }
+      empty.classList.add('hidden-vis'); wrap.classList.remove('hidden-vis');
+      prospects.forEach(p=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-4 py-2">${p.name}</td>
+          <td class="px-4 py-2">${p.sector}</td>
+          <td class="px-4 py-2 font-semibold">${p.score}</td>
+          <td class="px-4 py-2">
+            <button class="px-3 py-1 rounded-lg border hover:bg-gray-50" onclick="messageLead(${p.id})">Message</button>
+            <a class="ml-2 px-3 py-1 rounded-lg btn-gradient text-white" target="_blank" rel="noopener noreferrer" href="${p.linkedin}">LinkedIn</a>
+          </td>`;
+        body.appendChild(tr);
+      });
+    }
+    function messageLead(id){
+      const lead = prospects.find(x=>x.id===id);
+      if(!lead) return;
+      const msg = `Bonjour ${lead.name}, j’aide des équipes ${lead.sector} à obtenir des résultats concrets sur LinkedIn. Partant(e) pour échanger 10mn ?`;
+      $('#editor').value = msg + '\n\n— Brouillon de message (modifiable)';
+      showSection('editor');
+      showNotification('Brouillon de message ajouté ✉️','success');
+    }
+    function clearProspects(){ prospects = []; stats.leads = 0; updateStats(); renderProspects(); saveUserData(); }
 
-        // Optimiseur de contenu
-        function openOptimizer() {
-            document.getElementById('optimizerModal').classList.remove('hidden');
-        }
+    // Pipeline
+    function managePipeline(){
+      deals = [
+        { id:Date.now()+11, client:'ABC Corp', value:'5 000€', stage:'Négociation' },
+        { id:Date.now()+12, client:'XYZ Ltd', value:'3 500€', stage:'Proposition' }
+      ];
+      renderDeals(); saveUserData();
+      showSection('pipeline');
+      showNotification(`${deals.length} opportunités affichées 💼`,'success');
+    }
+    function renderDeals(){
+      const empty = $('#pipelineEmpty');
+      const wrap = $('#pipelineList');
+      const body = $('#pipelineTbody');
+      body.innerHTML = '';
+      if(!deals.length){ empty.classList.remove('hidden-vis'); wrap.classList.add('hidden-vis'); return; }
+      empty.classList.add('hidden-vis'); wrap.classList.remove('hidden-vis');
+      deals.forEach(d=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-4 py-2">${d.client}</td>
+          <td class="px-4 py-2">${d.value}</td>
+          <td class="px-4 py-2">${d.stage}</td>
+          <td class="px-4 py-2">
+            <button class="px-3 py-1 rounded-lg border hover:bg-gray-50" onclick="advanceDeal(${d.id})">Avancer</button>
+          </td>`;
+        body.appendChild(tr);
+      });
+    }
+    function advanceDeal(id){
+      const stages = ['Prospection','Qualification','Proposition','Négociation','Gagné'];
+      const deal = deals.find(x=>x.id===id);
+      if(!deal) return;
+      const idx = stages.indexOf(deal.stage);
+      deal.stage = stages[Math.min(idx+1, stages.length-1)];
+      renderDeals(); saveUserData();
+      showNotification(`Opportunité → ${deal.stage} ✅`,'success');
+    }
+    function clearDeals(){ deals = []; renderDeals(); saveUserData(); }
 
-        function closeOptimizerModal() {
-            document.getElementById('optimizerModal').classList.add('hidden');
-        }
+    // Framework Result copy
+    function copyFrameworkContent(){ navigator.clipboard.writeText($('#frameworkOutput').textContent).then(()=> showNotification('Contenu copié 📋','success')); }
 
-        function analyzeContent() {
-            const content = document.getElementById('contentToOptimize').value;
-            
-            if (!content.trim()) {
-                showNotification('⚠️ Veuillez coller du contenu à analyser', 'warning');
-                return;
-            }
+    // Optimizer open via top module button
+    // kept: openOptimizer()
 
-            // Simulation d'analyse
-            const improvements = [
-                'Hook trop faible - manque d\'impact',
-                'Pas de call-to-action clair',
-                'Manque d\'émojis pour la lisibilité',
-                'Paragraphes trop longs',
-                'Pas de hashtags optimisés'
-            ];
-
-            const suggestions = [
-                'Commencer par une question ou statistique choc',
-                'Ajouter "👉 Commentez X si vous êtes d\'accord"',
-                'Utiliser des émojis pour structurer le contenu',
-                'Diviser en points courts et lisibles',
-                'Ajouter 3-5 hashtags pertinents'
-            ];
-
-            // Afficher les résultats
-            document.getElementById('improvementPoints').innerHTML = improvements
-                .map(point => `<div class="text-sm text-red-700">• ${point}</div>`)
-                .join('');
-
-            document.getElementById('suggestions').innerHTML = suggestions
-                .map(suggestion => `<div class="text-sm text-green-700">• ${suggestion}</div>`)
-                .join('');
-
-            // Générer version optimisée
-            let optimized = content;
-            
-            // Ajouter hook si manquant
-            if (!optimized.startsWith('🚨') && !optimized.startsWith('💡') && !optimized.startsWith('🔥')) {
-                optimized = '🚨 ' + optimized;
-            }
-            
-            // Ajouter CTA si manquant
-            if (!optimized.includes('👉') && !optimized.includes('Commentez')) {
-                optimized += '\n\n👉 Êtes-vous d\'accord ? Dites-le moi en commentaire !';
-            }
-            
-            // Ajouter hashtags si manquants
-            if (!optimized.includes('#')) {
-                optimized += '\n\n#LinkedIn #Business #Conseils';
-            }
-
-            document.getElementById('optimizedContent').textContent = optimized;
-            document.getElementById('optimizationResults').classList.remove('hidden');
-            
-            showNotification('🔍 Analyse terminée ! Consultez les suggestions', 'success');
-        }
-
-        function copyOptimizedContent() {
-            const content = document.getElementById('optimizedContent').textContent;
-            navigator.clipboard.writeText(content).then(() => {
-                showNotification('📋 Version optimisée copiée !', 'success');
-            });
-        }
-
-        // Autres fonctions
-        function generateAuthorityContent() {
-            const topics = [
-                `💡 3 erreurs que je vois souvent en ${userProfile.sector}`,
-                `🚀 Comment j'ai transformé mon approche du ${userProfile.sector}`,
-                `⚡ La vérité sur ${userProfile.sector} que personne ne dit`,
-                `🎯 Mon framework secret pour réussir en ${userProfile.sector}`
-            ];
-            
-            const selectedTopic = topics[Math.floor(Math.random() * topics.length)];
-            
-            // Mettre à jour les stats
-            stats.authority += 0.3;
-            stats.posts++;
-            updateStats();
-            saveUserData();
-            
-            showNotification(`✨ Sujet généré: "${selectedTopic}"`, 'success');
-        }
-
-        function startProspection() {
-            const prospects = [
-                { name: 'Marie Dubois', sector: 'E-commerce', score: 85 },
-                { name: 'Jean Martin', sector: 'Consulting', score: 92 },
-                { name: 'Sophie Laurent', sector: 'Tech', score: 78 }
-            ];
-            
-            stats.leads += prospects.length;
-            updateStats();
-            saveUserData();
-            
-            showNotification(`🎯 ${prospects.length} nouveaux prospects identifiés !`, 'success');
-        }
-
-        function managePipeline() {
-            const deals = [
-                { client: 'ABC Corp', value: '5000€', stage: 'Négociation' },
-                { client: 'XYZ Ltd', value: '3500€', stage: 'Proposition' }
-            ];
-            
-            showNotification(`💰 ${deals.length} opportunités en cours dans votre pipeline`, 'info');
-        }
-
-        // Fonctions utilitaires
-        function updateStats() {
-            document.getElementById('postsCount').textContent = stats.posts;
-            document.getElementById('leadsCount').textContent = stats.leads;
-            document.getElementById('engagementRate').textContent = Math.min(stats.posts * 2.5, 100).toFixed(1) + '%';
-            document.getElementById('authorityScore').textContent = Math.min(stats.authority * 10, 100).toFixed(1);
-        }
-
-        function saveUserData() {
-            localStorage.setItem('linkedinMasterSuite', JSON.stringify({
-                profile: userProfile,
-                stats: stats
-            }));
-        }
-
-        function loadUserData() {
-            const saved = localStorage.getItem('linkedinMasterSuite');
-            if (saved) {
-                const data = JSON.parse(saved);
-                userProfile = { ...userProfile, ...data.profile };
-                stats = { ...stats, ...data.stats };
-            }
-        }
-
-        function showNotification(message, type = 'info') {
-            const colors = {
-                success: 'bg-green-500',
-                error: 'bg-red-500',
-                warning: 'bg-yellow-500',
-                info: 'bg-blue-500'
-            };
-            
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300`;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // Fermer les menus en cliquant ailleurs
-        document.addEventListener('click', function(event) {
-            const profileMenu = document.getElementById('profileMenu');
-            const profileButton = event.target.closest('[onclick="toggleProfileMenu()"]');
-            
-            if (!profileButton && !profileMenu.contains(event.target)) {
-                profileMenu.classList.add('hidden');
-            }
-        });
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981731bf33d96dd4',t:'MTc1ODI2NTEwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    // Init
+    (function init(){
+      loadUserData();
+      updateProfileDisplay();
+      updateStats();
+      showSection('editor');
+    })();
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98174a756517a4c4',t:'MTc1ODI2NjExNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
