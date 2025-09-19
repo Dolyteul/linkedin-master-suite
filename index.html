@@ -54,6 +54,13 @@
         </div>
         <div class="hidden sm:flex items-center gap-3">
           <a href="#" class="text-slate-300 text-sm hover:text-white" onclick="event.preventDefault(); openHelp();">Aide</a>
+          <button class="btn px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white" onclick="openProfile()">
+            <span class="mr-2">👤</span> Profil
+          </button>
+          <div id="header-profile" class="flex items-center gap-2 px-2 py-1 rounded-lg bg-white/10">
+            <div id="header-initials" class="w-7 h-7 rounded-full bg-white/20 grid place-items-center text-white text-xs font-semibold">--</div>
+            <span id="header-status" class="text-xs text-slate-200">Hors ligne</span>
+          </div>
           <button class="btn px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white">Nouvelle campagne</button>
         </div>
       </div>
@@ -327,9 +334,9 @@
           <div class="flex items-start gap-3 mb-4">
             <div class="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full grid place-items-center text-white text-lg">👑</div>
             <div>
-              <h4 class="font-semibold text-slate-900">Votre Nom • Expert LinkedIn</h4>
-              <p class="text-sm text-slate-600">Spécialiste Acquisition Clients • Guadeloupe 🌴</p>
-              <p class="text-xs text-slate-500">Maintenant • 🌍</p>
+              <h4 id="preview-name" class="font-semibold text-slate-900">Votre Nom • Expert LinkedIn</h4>
+              <p id="preview-sector-geo" class="text-sm text-slate-600">Secteur • Géos cibles 🌍</p>
+              <p class="text-xs text-slate-500">Maintenant • <a id="preview-linkedin" href="#" target="_blank" rel="noopener noreferrer" class="underline text-sky-600 hover:text-sky-700">Profil LinkedIn</a></p>
             </div>
           </div>
           <div id="preview-content" class="text-slate-800 mb-4">
@@ -363,6 +370,43 @@
     <!-- Module Panels (démo simple) -->
     <section id="panels" class="mt-10">
       <div class="grid md:grid-cols-2 gap-6">
+        <div id="panel-profile" class="bg-white/5 rounded-xl p-5">
+          <h4 class="font-semibold mb-3">Profil — Identité & Connexion</h4>
+          <form id="profile-form" class="space-y-4" onsubmit="event.preventDefault(); saveProfile();">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm text-slate-300 mb-1">Prénom</label>
+                <input id="pf-first" type="text" class="w-full px-3 py-2 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-500" placeholder="Ex: Lina">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-300 mb-1">Nom</label>
+                <input id="pf-last" type="text" class="w-full px-3 py-2 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-500" placeholder="Ex: Martin">
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm text-slate-300 mb-1">Secteur</label>
+                <input id="pf-sector" type="text" class="w-full px-3 py-2 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-500" placeholder="Ex: Conseil, SaaS, Immobilier">
+              </div>
+              <div>
+                <label class="block text-sm text-slate-300 mb-1">Géos cibles (monde)</label>
+                <input id="pf-geo" type="text" class="w-full px-3 py-2 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-500" placeholder="Ex: France, Guadeloupe, Québec, Maroc">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm text-slate-300 mb-1">Lien profil LinkedIn</label>
+              <input id="pf-linkedin" type="url" class="w-full px-3 py-2 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-500" placeholder="https://www.linkedin.com/in/votre-profil">
+            </div>
+            <div class="flex flex-wrap gap-3 items-center">
+              <button type="submit" class="btn bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-4 py-2 rounded-lg">Enregistrer</button>
+              <button type="button" onclick="simulateLogin()" class="btn bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg" id="btn-login">Se connecter</button>
+              <button type="button" onclick="simulateLogout()" class="btn bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg hidden" id="btn-logout">Se déconnecter</button>
+              <a id="pf-link" href="#" target="_blank" rel="noopener noreferrer" class="text-sm text-sky-300 hover:text-sky-200 underline hidden">Voir mon LinkedIn</a>
+              <span class="text-xs text-slate-300">Synchronisation démo locale (pas d’API LinkedIn).</span>
+            </div>
+          </form>
+        </div>
+
         <div id="panel-core" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-2">CORE — Raccourcis</h4>
           <div class="flex flex-wrap gap-2">
@@ -373,8 +417,9 @@
         </div>
         <div id="panel-networking" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-2">NET — Actions rapides</h4>
-          <p class="text-slate-300 text-sm mb-3">Suggère 5 connexions qualifiées proches de toi.</p>
-          <button class="btn bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg" onclick="toast('5 connexions proposées ✅')">Proposer</button>
+          <p class="text-slate-300 text-sm mb-3">Suggère 5 connexions qualifiées selon tes géos cibles.</p>
+          <button class="btn bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg" onclick="proposeConnections()">Proposer</button>
+          <ul id="net-list" class="text-sm text-slate-300 mt-3 list-disc pl-5"></ul>
         </div>
         <div id="panel-optimizer" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-2">AI — Optimisations</h4>
@@ -615,6 +660,84 @@
       toast('Astuce: clique un module pour afficher ses actions.');
     }
 
+    // Profil — gestion locale (pas d’API LinkedIn)
+    function initials(first, last){
+      const a = (first||'').trim()[0]||'-';
+      const b = (last||'').trim()[0]||'-';
+      return (a + b).toUpperCase();
+    }
+    function openProfile(){ showModule('profile'); }
+    function saveProfile(){
+      const p = {
+        first: document.getElementById('pf-first').value.trim(),
+        last: document.getElementById('pf-last').value.trim(),
+        sector: document.getElementById('pf-sector').value.trim(),
+        geo: document.getElementById('pf-geo').value.trim(),
+        linkedin: document.getElementById('pf-linkedin').value.trim(),
+        logged: !!window.__logged
+      };
+      localStorage.setItem('cms_profile', JSON.stringify(p));
+      applyProfile(p);
+      toast('Profil enregistré ✅');
+    }
+    function loadProfile(){
+      try{
+        const raw = localStorage.getItem('cms_profile');
+        if(!raw) return;
+        const p = JSON.parse(raw);
+        document.getElementById('pf-first').value = p.first||'';
+        document.getElementById('pf-last').value = p.last||'';
+        document.getElementById('pf-sector').value = p.sector||'';
+        document.getElementById('pf-geo').value = p.geo||'';
+        document.getElementById('pf-linkedin').value = p.linkedin||'';
+        applyProfile(p);
+      }catch(e){}
+    }
+    function applyProfile(p){
+      // header
+      document.getElementById('header-initials').textContent = initials(p.first, p.last);
+      document.getElementById('header-status').textContent = window.__logged ? 'Connecté' : 'Hors ligne';
+      // preview
+      const name = [p.first, p.last].filter(Boolean).join(' ') || 'Votre Nom';
+      document.getElementById('preview-name').textContent = name + ' • Expert LinkedIn';
+      const sg = [p.sector||'Secteur', p.geo||'Géos cibles 🌍'].join(' • ');
+      document.getElementById('preview-sector-geo').textContent = sg;
+      const link = document.getElementById('preview-linkedin');
+      const linkHdr = document.getElementById('pf-link');
+      if(p.linkedin){
+        link.href = p.linkedin; linkHdr.href = p.linkedin; linkHdr.classList.remove('hidden');
+      }
+    }
+    function simulateLogin(){
+      window.__logged = true;
+      document.getElementById('btn-login').classList.add('hidden');
+      document.getElementById('btn-logout').classList.remove('hidden');
+      document.getElementById('header-status').textContent = 'Connecté';
+      toast('Connecté (démo) 🔄');
+    }
+    function simulateLogout(){
+      window.__logged = false;
+      document.getElementById('btn-login').classList.remove('hidden');
+      document.getElementById('btn-logout').classList.add('hidden');
+      document.getElementById('header-status').textContent = 'Hors ligne';
+      toast('Déconnecté (démo)');
+    }
+
+    // Networking propose based on profile geo (worldwide, not limited)
+    function proposeConnections(){
+      const geo = (document.getElementById('pf-geo').value||'Monde').split(',').map(s=>s.trim()).filter(Boolean);
+      const base = ['CMO', 'Founder', 'Sales Lead', 'HRBP', 'Ops Manager', 'Consultant', 'Head of Growth'];
+      const picks = [];
+      for(let i=0;i<5;i++){
+        const city = geo[i%geo.length] || 'Global';
+        picks.push(`${base[i%base.length]} — ${city}`);
+      }
+      const ul = document.getElementById('net-list');
+      ul.innerHTML = '';
+      picks.forEach(p=>{ const li = document.createElement('li'); li.textContent = p; ul.appendChild(li); });
+      toast('Connexions proposées 🌍');
+    }
+
     // Light live metrics shimmer
     setInterval(()=>{
       const bump = (v)=> (v>0?'+':'') + (v + (Math.random()*6 - 3)|0) + '%';
@@ -624,8 +747,8 @@
     }, 3000);
 
     document.addEventListener('DOMContentLoaded', ()=>{
-      updateCharCount(); updatePreviewContent(); loadDraft();
+      updateCharCount(); updatePreviewContent(); loadDraft(); loadProfile();
     });
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981b7776f732c5ac',t:'MTc1ODMwOTkwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981b88d35241e855',t:'MTc1ODMxMDYxMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
