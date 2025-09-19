@@ -3,776 +3,531 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkedIn Master Suite - Version Complète</title>
+    <title>LinkedIn Master Suite - Frameworks Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #0077b5 0%, #00a0dc 100%); }
-        .card-hover { transition: all 0.3s ease; }
-        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .module-card { transition: all 0.3s ease; cursor: pointer; }
-        .module-card:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
-        .module-card.active { ring: 3px; ring-color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .pulse-dot { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .success-animation { animation: successPulse 0.6s ease-out; }
-        @keyframes successPulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); }
+        .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .framework-card { transition: all 0.3s ease; }
+        .framework-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        /* Améliorations d’accessibilité et de contraste */
+        :root { color-scheme: light; }
+        input, select, textarea { color: #1f2937; background-color: #ffffff; }
+        input::placeholder, textarea::placeholder { color: #9ca3af; }
+        button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; }
     </style>
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
-    <header class="gradient-bg text-white shadow-lg">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-3">
-                    <i class="fab fa-linkedin text-3xl"></i>
+                    <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fab fa-linkedin text-xl"></i>
+                    </div>
                     <div>
-                        <h1 class="text-2xl font-bold">LinkedIn Master Suite</h1>
-                        <p class="text-sm opacity-90">Version Complète - 8 Modules Interconnectés 🚀</p>
+                        <h1 class="text-xl font-bold">LinkedIn Master Suite</h1>
+                        <p class="text-sm opacity-90">Frameworks Edition</p>
                     </div>
                 </div>
+                
                 <div class="flex items-center space-x-4">
-                    <!-- LinkedIn Connection Status -->
-                    <div id="linkedin-status" class="flex items-center space-x-2 px-3 py-1 bg-white/10 rounded-full">
-                        <div class="w-2 h-2 bg-red-400 rounded-full pulse-dot" id="connection-dot"></div>
-                        <span class="text-sm" id="connection-status">Non connecté</span>
-                        <button onclick="connectLinkedIn()" id="connect-btn" class="text-xs bg-white/20 px-2 py-1 rounded-full hover:bg-white/30 transition-colors">
-                            Connecter
+                    <div class="relative">
+                        <button onclick="toggleProfileMenu()" class="flex items-center space-x-2 bg-white text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-100 transition-all">
+                            <i class="fas fa-user-circle text-lg"></i>
+                            <span id="userName">Mon Profil</span>
+                            <i class="fas fa-chevron-down text-sm"></i>
                         </button>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-sm opacity-90">ROI Généré</div>
-                        <div class="text-xl font-bold text-yellow-300">€12,847</div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                            <i class="fas fa-crown text-yellow-500"></i>
+                        
+                        <!-- Menu Profil -->
+                        <div id="profileMenu" class="absolute right-0 mt-2 w-64 bg-white text-gray-800 rounded-lg shadow-xl border border-gray-200 hidden">
+                            <div class="p-4 border-b border-gray-100">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-900" id="profileName">Utilisateur</p>
+                                        <p class="text-sm text-gray-600" id="profileSector">Secteur non défini</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-2">
+                                <button onclick="editProfile()" class="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center space-x-2">
+                                    <i class="fas fa-edit text-gray-500"></i>
+                                    <span>Modifier mon profil</span>
+                                </button>
+                                <button onclick="viewStats()" class="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center space-x-2">
+                                    <i class="fas fa-chart-bar text-gray-500"></i>
+                                    <span>Mes statistiques</span>
+                                </button>
+                                <button onclick="exportData()" class="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center space-x-2">
+                                    <i class="fas fa-download text-gray-500"></i>
+                                    <span>Exporter mes données</span>
+                                </button>
+                                <hr class="my-2">
+                                <button onclick="logout()" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center space-x-2">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Se déconnecter</span>
+                                </button>
+                            </div>
                         </div>
-                        <span class="font-medium">Expert LinkedIn</span>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- LinkedIn Integration Modal -->
-    <div id="linkedin-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-gray-900">🔗 Connecter LinkedIn</h3>
-                    <button onclick="closeLinkedInModal()" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Stats Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Posts Créés</p>
+                        <p class="text-2xl font-bold text-gray-800" id="postsCount">0</p>
+                    </div>
+                    <i class="fas fa-edit text-blue-500 text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Leads Générés</p>
+                        <p class="text-2xl font-bold text-gray-800" id="leadsCount">0</p>
+                    </div>
+                    <i class="fas fa-users text-green-500 text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Taux Engagement</p>
+                        <p class="text-2xl font-bold text-gray-800" id="engagementRate">0%</p>
+                    </div>
+                    <i class="fas fa-heart text-purple-500 text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-orange-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Score Autorité</p>
+                        <p class="text-2xl font-bold text-gray-800" id="authorityScore">0</p>
+                    </div>
+                    <i class="fas fa-crown text-orange-500 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modules Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Module Frameworks de Contenu -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100 framework-card">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-magic text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Frameworks de Contenu</h3>
+                        <p class="text-gray-600">Templates qui convertissent</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 mb-4">Utilisez des frameworks éprouvés pour créer du contenu viral et engageant qui génère des leads.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">🍋 Citron Pressé</span>
+                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">🔄 Reverse</span>
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">🎯 AIDA</span>
+                </div>
+                <button onclick="openFrameworkGenerator()" class="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-6 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold">
+                    Choisir un Framework
+                </button>
+            </div>
+
+            <!-- Module Générateur de Contenu -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-robot text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Générateur IA</h3>
+                        <p class="text-gray-600">Contenu personnalisé</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 mb-4">Créez du contenu personnalisé basé sur votre secteur et vos objectifs business.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">IA Avancée</span>
+                    <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Personnalisé</span>
+                </div>
+                <button onclick="openContentModal()" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-semibold">
+                    Générer du Contenu
+                </button>
+            </div>
+
+            <!-- Module Prospection -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-search text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Prospection Intelligente</h3>
+                        <p class="text-gray-600">Trouvez vos clients idéaux</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 mb-4">Identifiez et contactez vos prospects qualifiés avec des messages personnalisés.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">Ciblage Précis</span>
+                    <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm">Messages Auto</span>
+                </div>
+                <button onclick="startProspection()" class="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white py-3 px-6 rounded-lg hover:from-green-600 hover:to-teal-600 transition-all duration-300 font-semibold">
+                    Lancer la Prospection
+                </button>
+            </div>
+
+            <!-- Module Optimiseur de Contenu -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-chart-line text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Optimiseur de Contenu</h3>
+                        <p class="text-gray-600">Améliorez vos posts</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 mb-4">Analysez et optimisez votre contenu existant pour maximiser l'engagement et les conversions.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">Analyse SEO</span>
+                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">Suggestions</span>
+                </div>
+                <button onclick="openOptimizer()" class="w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-3 px-6 rounded-lg hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 font-semibold">
+                    Optimiser mon Contenu
+                </button>
+            </div>
+
+            <!-- Module Constructeur d'Autorité -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-crown text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Constructeur d'Autorité</h3>
+                        <p class="text-gray-600">Positionnement expert</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 mb-4">Créez du contenu thought leadership qui établit votre expertise et attire les prospects qualifiés.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Thought Leadership</span>
+                    <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm">Expertise</span>
+                </div>
+                <button onclick="generateAuthorityContent()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-6 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 font-semibold">
+                    Créer du Contenu d'Expert
+                </button>
+            </div>
+
+            <!-- Module Pipeline de Vente -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-funnel-dollar text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Pipeline de Vente</h3>
+                        <p class="text-gray-600">Convertissez vos leads</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 mb-4">Gérez votre pipeline de vente et transformez vos connexions LinkedIn en clients payants.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">CRM Intégré</span>
+                    <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">Suivi Ventes</span>
+                </div>
+                <button onclick="managePipeline()" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-6 rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 font-semibold">
+                    Gérer mon Pipeline
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Frameworks de Contenu -->
+    <div id="frameworkModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800">🎯 Frameworks de Contenu Viral</h2>
+                        <button onclick="closeFrameworkModal()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
                 </div>
                 
-                <div class="space-y-4">
-                    <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <h4 class="font-semibold text-blue-900 mb-2">🚀 Fonctionnalités automatisées</h4>
-                        <ul class="text-sm text-blue-800 space-y-1">
-                            <li>✅ Publication automatique de posts</li>
-                            <li>✅ Analyse de performance en temps réel</li>
-                            <li>✅ Détection de prospects qualifiés</li>
-                            <li>✅ Messages personnalisés automatiques</li>
-                            <li>✅ Suivi des conversions et ROI</li>
-                        </ul>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                        <!-- Framework Citron Pressé -->
+                        <div class="border-2 border-yellow-200 rounded-lg p-4 hover:border-yellow-400 cursor-pointer transition-all framework-card" onclick="selectFramework('citron')">
+                            <div class="flex items-center mb-3">
+                                <span class="text-2xl mr-2">🍋</span>
+                                <h3 class="font-bold text-gray-800">CITRON PRESSÉ</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">Fail + Solution</p>
+                            <p class="text-xs text-gray-500">"J'ai perdu 1000€... Voici comment l'éviter"</p>
+                        </div>
+
+                        <!-- Framework Reverse Thinking -->
+                        <div class="border-2 border-blue-200 rounded-lg p-4 hover:border-blue-400 cursor-pointer transition-all framework-card" onclick="selectFramework('reverse')">
+                            <div class="flex items-center mb-3">
+                                <span class="text-2xl mr-2">🔄</span>
+                                <h3 class="font-bold text-gray-800">REVERSE THINKING</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">Casser les Mythes</p>
+                            <p class="text-xs text-gray-500">"Non, ce n'est pas compliqué... si tu connais ça"</p>
+                        </div>
+
+                        <!-- Framework Ignorance Assumée -->
+                        <div class="border-2 border-green-200 rounded-lg p-4 hover:border-green-400 cursor-pointer transition-all framework-card" onclick="selectFramework('ignorance')">
+                            <div class="flex items-center mb-3">
+                                <span class="text-2xl mr-2">🙈</span>
+                                <h3 class="font-bold text-gray-800">IGNORANCE ASSUMÉE</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">Confession Utile</p>
+                            <p class="text-xs text-gray-500">"Je ne sais pas... mais je fais mieux que les pros"</p>
+                        </div>
+
+                        <!-- Framework Kit de Survie -->
+                        <div class="border-2 border-purple-200 rounded-lg p-4 hover:border-purple-400 cursor-pointer transition-all framework-card" onclick="selectFramework('kit')">
+                            <div class="flex items-center mb-3">
+                                <span class="text-2xl mr-2">🛠️</span>
+                                <h3 class="font-bold text-gray-800">KIT DE SURVIE</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">Freebie qui Convertit</p>
+                            <p class="text-xs text-gray-500">"Je t'offre ma liste... MP 'GRATUIT'"</p>
+                        </div>
+
+                        <!-- Framework AIDA -->
+                        <div class="border-2 border-red-200 rounded-lg p-4 hover:border-red-400 cursor-pointer transition-all framework-card" onclick="selectFramework('aida')">
+                            <div class="flex items-center mb-3">
+                                <span class="text-2xl mr-2">🎯</span>
+                                <h3 class="font-bold text-gray-800">AIDA</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">Attention → Action</p>
+                            <p class="text-xs text-gray-500">Attention, Intérêt, Désir, Action</p>
+                        </div>
+
+                        <!-- Framework PAS -->
+                        <div class="border-2 border-orange-200 rounded-lg p-4 hover:border-orange-400 cursor-pointer transition-all framework-card" onclick="selectFramework('pas')">
+                            <div class="flex items-center mb-3">
+                                <span class="text-2xl mr-2">🔥</span>
+                                <h3 class="font-bold text-gray-800">PAS</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">Problème → Solution</p>
+                            <p class="text-xs text-gray-500">Problème, Agitation, Solution</p>
+                        </div>
+
+                        <!-- Framework BAB -->
+                        <div class="border-2 border-teal-200 rounded-lg p-4 hover:border-teal-400 cursor-pointer transition-all framework-card" onclick="selectFramework('bab')">
+                            <div class="flex items-center mb-3">
+                                <span class="text-2xl mr-2">🌉</span>
+                                <h3 class="font-bold text-gray-800">BAB</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">Before → After → Bridge</p>
+                            <p class="text-xs text-gray-500">Transformation visible</p>
+                        </div>
+
+                        <!-- Framework STAR -->
+                        <div class="border-2 border-pink-200 rounded-lg p-4 hover:border-pink-400 cursor-pointer transition-all framework-card" onclick="selectFramework('star')">
+                            <div class="flex items-center mb-3">
+                                <span class="text-2xl mr-2">⭐</span>
+                                <h3 class="font-bold text-gray-800">STAR</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">Situation → Résultat</p>
+                            <p class="text-xs text-gray-500">Storytelling structuré</p>
+                        </div>
+
+                        <!-- Framework MIEL -->
+                        <div class="border-2 border-amber-200 rounded-lg p-4 hover:border-amber-400 cursor-pointer transition-all framework-card" onclick="selectFramework('miel')">
+                            <div class="flex items-center mb-3">
+                                <span class="text-2xl mr-2">🍯</span>
+                                <h3 class="font-bold text-gray-800">MIEL</h3>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">Moment → Leçon</p>
+                            <p class="text-xs text-gray-500">Insight émotionnel</p>
+                        </div>
                     </div>
-                    
-                    <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <h4 class="font-semibold text-yellow-900 mb-2">⚠️ Informations importantes</h4>
-                        <p class="text-sm text-yellow-800">
-                            Cette démo simule l'intégration LinkedIn. Dans la version réelle, vous utiliseriez l'API LinkedIn officielle avec authentification OAuth 2.0.
-                        </p>
+
+                    <!-- Zone de génération -->
+                    <div id="frameworkGenerator" class="hidden">
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-lg font-bold mb-4">Génération avec le framework <span id="selectedFramework" class="text-blue-600"></span></h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ton sujet/secteur</label>
+                                    <input type="text" id="frameworkTopic" placeholder="Ex: e-commerce, coaching, immobilier..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ton objectif</label>
+                                    <select id="frameworkGoal" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <option value="leads">Générer des leads</option>
+                                        <option value="engagement">Augmenter l'engagement</option>
+                                        <option value="vente">Vendre un produit/service</option>
+                                        <option value="autorite">Établir son autorité</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Détails spécifiques (optionnel)</label>
+                                <textarea id="frameworkDetails" placeholder="Ajoute des détails sur ton expérience, ton produit, ton audience..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="3"></textarea>
+                            </div>
+
+                            <button onclick="generateFrameworkContent()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-semibold">
+                                🚀 Générer le Contenu
+                            </button>
+                        </div>
+
+                        <div id="frameworkResult" class="mt-6 hidden">
+                            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="text-lg font-bold text-gray-800">Contenu Généré</h4>
+                                    <div class="flex space-x-2">
+                                        <button onclick="optimizeFrameworkContent()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all">
+                                            <i class="fas fa-magic mr-2"></i>Optimiser
+                                        </button>
+                                        <button onclick="copyFrameworkContent()" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all">
+                                            <i class="fas fa-copy mr-2"></i>Copier
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="frameworkOutput" class="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap font-medium leading-relaxed"></div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <form onsubmit="simulateLinkedInConnection(event)" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">URL de votre profil LinkedIn</label>
-                            <input type="url" id="linkedin-url" placeholder="https://linkedin.com/in/votre-profil" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Votre secteur d'activité</label>
-                            <select id="business-sector" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                                <option>Consulting & Services</option>
-                                <option>Marketing Digital</option>
-                                <option>Formation & Coaching</option>
-                                <option>E-commerce</option>
-                                <option>Immobilier</option>
-                                <option>Finance & Assurance</option>
-                                <option>Autre</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Objectif principal</label>
-                            <select id="main-goal" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                                <option>Acquisition de clients</option>
-                                <option>Génération de leads</option>
-                                <option>Personal branding</option>
-                                <option>Networking professionnel</option>
-                                <option>Recrutement</option>
-                            </select>
-                        </div>
-                        
-                        <div class="flex items-center">
-                            <input type="checkbox" id="terms-checkbox" class="mr-2" required>
-                            <label for="terms-checkbox" class="text-sm text-gray-600">
-                                J'accepte les conditions d'utilisation et la politique de confidentialité
-                            </label>
-                        </div>
-                        
-                        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all">
-                            <i class="fab fa-linkedin mr-2"></i>
-                            Connecter mon profil LinkedIn
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container mx-auto px-6 py-8">
-        <!-- Module Navigation - 8 Modules -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <!-- Module 1: CORE -->
-            <div class="module-card bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-xl p-4 active" onclick="showModule('core')">
-                <div class="flex items-center justify-between mb-2">
-                    <i class="fas fa-layer-group text-2xl"></i>
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">CORE</span>
-                </div>
-                <h3 class="font-bold text-lg">Buffer Pro</h3>
-                <p class="text-sm opacity-90">Composition • Planning • Analytics</p>
-                <div class="flex items-center mt-3 text-xs">
-                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 pulse-dot"></div>
-                    <span>Clés partagées actives</span>
-                </div>
-            </div>
-
-            <!-- Module 2: NETWORKING -->
-            <div class="module-card bg-gradient-to-br from-green-600 to-green-700 text-white rounded-xl p-4" onclick="showModule('networking')">
-                <div class="flex items-center justify-between mb-2">
-                    <i class="fas fa-network-wired text-2xl"></i>
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">NET</span>
-                </div>
-                <h3 class="font-bold text-lg">Smart Network</h3>
-                <p class="text-sm opacity-90">Contacts • Géo-ciblage • Approche</p>
-                <div class="flex items-center mt-3 text-xs">
-                    <div class="w-2 h-2 bg-yellow-400 rounded-full mr-2"></div>
-                    <span>Avantage Guadeloupe</span>
-                </div>
-            </div>
-
-            <!-- Module 3: IA OPTIMIZER -->
-            <div class="module-card bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-xl p-4" onclick="showModule('optimizer')">
-                <div class="flex items-center justify-between mb-2">
-                    <i class="fas fa-robot text-2xl"></i>
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">AI</span>
-                </div>
-                <h3 class="font-bold text-lg">IA Optimizer</h3>
-                <p class="text-sm opacity-90">Temps réel • Prédictions • Auto</p>
-                <div class="flex items-center mt-3 text-xs">
-                    <div class="w-2 h-2 bg-red-400 rounded-full mr-2 pulse-dot"></div>
-                    <span>Analyse en cours</span>
-                </div>
-            </div>
-
-            <!-- Module 4: GROWTH HACKER -->
-            <div class="module-card bg-gradient-to-br from-orange-600 to-red-600 text-white rounded-xl p-4" onclick="showModule('growth')">
-                <div class="flex items-center justify-between mb-2">
-                    <i class="fas fa-rocket text-2xl"></i>
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">HACK</span>
-                </div>
-                <h3 class="font-bold text-lg">Growth Hacker</h3>
-                <p class="text-sm opacity-90">Viral • Trends • Intelligence</p>
-                <div class="flex items-center mt-3 text-xs">
-                    <div class="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                    <span>ROI tracking actif</span>
-                </div>
-            </div>
-
-            <!-- Module 5: LEAD MAGNET FACTORY -->
-            <div class="module-card bg-gradient-to-br from-pink-600 to-rose-600 text-white rounded-xl p-4" onclick="showModule('leadmagnet')">
-                <div class="flex items-center justify-between mb-2">
-                    <i class="fas fa-magnet text-2xl"></i>
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">LEAD</span>
-                </div>
-                <h3 class="font-bold text-lg">Lead Magnet Factory</h3>
-                <p class="text-sm opacity-90">Capture • Convert • Nurture</p>
-                <div class="flex items-center mt-3 text-xs">
-                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 pulse-dot"></div>
-                    <span>127 leads ce mois</span>
-                </div>
-            </div>
-
-            <!-- Module 6: SALES ACCELERATOR -->
-            <div class="module-card bg-gradient-to-br from-emerald-600 to-teal-600 text-white rounded-xl p-4" onclick="showModule('sales')">
-                <div class="flex items-center justify-between mb-2">
-                    <i class="fas fa-chart-line text-2xl"></i>
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">SALES</span>
-                </div>
-                <h3 class="font-bold text-lg">Sales Accelerator</h3>
-                <p class="text-sm opacity-90">Pipeline • Scripts • Closing</p>
-                <div class="flex items-center mt-3 text-xs">
-                    <div class="w-2 h-2 bg-yellow-400 rounded-full mr-2"></div>
-                    <span>€2,340 ce mois</span>
-                </div>
-            </div>
-
-            <!-- Module 7: AUTHORITY BUILDER -->
-            <div class="module-card bg-gradient-to-br from-indigo-600 to-blue-600 text-white rounded-xl p-4" onclick="showModule('authority')">
-                <div class="flex items-center justify-between mb-2">
-                    <i class="fas fa-crown text-2xl"></i>
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">AUTH</span>
-                </div>
-                <h3 class="font-bold text-lg">Authority Builder</h3>
-                <p class="text-sm opacity-90">Thought Leader • Influence • Brand</p>
-                <div class="flex items-center mt-3 text-xs">
-                    <div class="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
-                    <span>Score influence: 9.2/10</span>
-                </div>
-            </div>
-
-            <!-- Module 8: CONVERSION TRACKER -->
-            <div class="module-card bg-gradient-to-br from-yellow-600 to-orange-600 text-white rounded-xl p-4" onclick="showModule('conversion')">
-                <div class="flex items-center justify-between mb-2">
-                    <i class="fas fa-bullseye text-2xl"></i>
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">CONV</span>
-                </div>
-                <h3 class="font-bold text-lg">Conversion Tracker</h3>
-                <p class="text-sm opacity-90">Attribution • ROI • Prédictions</p>
-                <div class="flex items-center mt-3 text-xs">
-                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 pulse-dot"></div>
-                    <span>Taux: 34.7%</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Master Dashboard -->
-        <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-semibold gradient-text">🚀 Master Dashboard - Performance Globale</h2>
-                <div class="flex items-center space-x-4">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-green-600">€12,847</div>
-                        <div class="text-xs text-gray-600">Revenus générés</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600">487%</div>
-                        <div class="text-xs text-gray-600">ROI LinkedIn</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-purple-600">23</div>
-                        <div class="text-xs text-gray-600">Clients acquis</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Interconnection Status -->
-            <div class="grid grid-cols-4 gap-4">
-                <div class="p-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg">
-                    <h4 class="font-semibold mb-2">🔗 Modules Interconnectés</h4>
-                    <div class="text-sm space-y-1">
-                        <div>✅ CORE ↔ AI ↔ GROWTH</div>
-                        <div>✅ NET ↔ LEAD ↔ SALES</div>
-                        <div>✅ AUTH ↔ CONV ↔ ALL</div>
-                    </div>
-                </div>
-                
-                <div class="p-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg">
-                    <h4 class="font-semibold mb-2">⚡ Performance Temps Réel</h4>
-                    <div class="text-sm space-y-1">
-                        <div>📊 Engagement: +127%</div>
-                        <div>🎯 Leads: +234%</div>
-                        <div>💰 Conversions: +189%</div>
-                    </div>
-                </div>
-                
-                <div class="p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg">
-                    <h4 class="font-semibold mb-2">🤖 IA Prédictive</h4>
-                    <div class="text-sm space-y-1">
-                        <div>🔮 Prochains clients: 3</div>
-                        <div>📈 Revenus 30j: €4,200</div>
-                        <div>⭐ Score viral: 9.1/10</div>
-                    </div>
-                </div>
-                
-                <div class="p-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg">
-                    <h4 class="font-semibold mb-2">🎯 Objectifs Semaine</h4>
-                    <div class="text-sm space-y-1">
-                        <div>✅ 2 nouveaux clients</div>
-                        <div>🔄 50 connexions qualifiées</div>
-                        <div>📱 Viral post (10K+ vues)</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODULE CORE -->
-        <div id="core-module" class="module-content">
-            <div class="grid lg:grid-cols-2 gap-8">
-                <!-- Post Composer Enhanced -->
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h2 class="text-xl font-semibold mb-6 flex items-center">
-                        <i class="fas fa-pen-fancy text-blue-600 mr-3"></i>
-                        Créateur de Contenu IA
-                    </h2>
-                    
-                    <!-- AI Content Generator -->
-                    <div class="mb-6 p-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg">
-                        <div class="flex items-center justify-between mb-3">
-                            <h4 class="font-semibold flex items-center">
-                                <i class="fas fa-robot mr-2"></i>
-                                Générateur IA - Client Magnet
-                            </h4>
-                            <button onclick="generateClientMagnetContent()" class="px-3 py-1 bg-white/20 rounded-full text-sm hover:bg-white/30 transition-colors">
-                                <i class="fas fa-magic mr-1"></i>Générer
-                            </button>
-                        </div>
-                        <div class="grid grid-cols-3 gap-3 text-sm">
-                            <div>
-                                <span class="opacity-90">Probabilité client:</span>
-                                <span class="font-bold text-yellow-300" id="client-probability">87%</span>
-                            </div>
-                            <div>
-                                <span class="opacity-90">Engagement prévu:</span>
-                                <span class="font-bold text-green-300" id="engagement-prediction">9.2%</span>
-                            </div>
-                            <div>
-                                <span class="opacity-90">Leads estimés:</span>
-                                <span class="font-bold text-blue-300" id="leads-estimation">12-18</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <form id="post-form" onsubmit="createPost(event)">
-                        <!-- Content Type Selection -->
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-3">Type de contenu client-magnet</label>
-                            <div class="grid grid-cols-3 gap-3">
-                                <button type="button" onclick="setContentType('authority')" id="type-authority" class="p-3 border-2 border-purple-600 bg-purple-50 text-purple-700 rounded-lg font-medium transition-all text-sm">
-                                    <i class="fas fa-crown mr-1"></i>Authority
-                                </button>
-                                <button type="button" onclick="setContentType('problem')" id="type-problem" class="p-3 border-2 border-gray-200 text-gray-600 rounded-lg font-medium transition-all hover:border-purple-300 text-sm">
-                                    <i class="fas fa-exclamation-triangle mr-1"></i>Problem
-                                </button>
-                                <button type="button" onclick="setContentType('solution')" id="type-solution" class="p-3 border-2 border-gray-200 text-gray-600 rounded-lg font-medium transition-all hover:border-purple-300 text-sm">
-                                    <i class="fas fa-lightbulb mr-1"></i>Solution
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Content Input Enhanced -->
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Contenu optimisé conversion</label>
-                            <textarea id="post-content" rows="6" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none" placeholder="Partagez votre expertise pour attirer vos clients idéaux..." oninput="updateCharCount()"></textarea>
-                            <div class="flex justify-between items-center mt-2">
-                                <span class="text-sm text-gray-500">
-                                    <span id="char-count">0</span>/3000 caractères
-                                </span>
-                                <div class="flex space-x-2">
-                                    <button type="button" onclick="addClientMagnetHashtags()" class="text-sm text-purple-600 hover:text-purple-700 font-medium">
-                                        <i class="fas fa-hashtag mr-1"></i>Hashtags Client
-                                    </button>
-                                    <button type="button" onclick="addCallToAction()" class="text-sm text-green-600 hover:text-green-700 font-medium">
-                                        <i class="fas fa-bullhorn mr-1"></i>Call-to-Action
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Lead Magnet Integration -->
-                        <div class="mb-6 p-4 bg-pink-50 rounded-lg border border-pink-200">
-                            <div class="flex items-center justify-between mb-3">
-                                <h4 class="font-semibold text-pink-900">🧲 Lead Magnet Intégré</h4>
-                                <label class="flex items-center">
-                                    <input type="checkbox" id="include-lead-magnet" class="mr-2" onchange="toggleLeadMagnet()">
-                                    <span class="text-sm text-pink-700">Inclure lead magnet</span>
-                                </label>
-                            </div>
-                            <div id="lead-magnet-options" class="hidden">
-                                <select id="lead-magnet-select" class="w-full p-3 border border-pink-300 rounded-lg focus:ring-2 focus:ring-pink-500 mb-3" onchange="updateLeadMagnetPreview()">
-                                    <option>📋 Checklist "10 Erreurs LinkedIn à Éviter"</option>
-                                    <option>📊 Template "Post Viral en 5 Minutes"</option>
-                                    <option>🎯 Guide "Trouver 10 Clients en 30 Jours"</option>
-                                    <option>💰 Calculateur "ROI LinkedIn"</option>
-                                </select>
-                                <p class="text-sm text-pink-700">Taux de conversion moyen: <span class="font-bold">34.7%</span></p>
-                            </div>
-                        </div>
-
-                        <!-- Smart Scheduling -->
-                        <div class="mb-6">
-                            <div class="flex items-center justify-between mb-3">
-                                <label class="block text-sm font-medium text-gray-700">Planification IA Optimisée</label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" id="ai-schedule-toggle" class="mr-2" onchange="toggleAIScheduling()">
-                                    <span class="text-sm text-gray-600">IA choisit le timing optimal</span>
-                                </label>
-                            </div>
-                            <div id="ai-schedule-info" class="hidden p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="font-medium text-blue-900">Timing optimal détecté</p>
-                                        <p class="text-sm text-blue-700">Demain 14h30 (GMT-4) • +127% engagement prévu</p>
-                                    </div>
-                                    <i class="fas fa-brain text-blue-600 text-xl"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Actions Enhanced -->
-                        <div class="flex space-x-3">
-                            <button type="submit" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition-all">
-                                <i class="fas fa-rocket mr-2"></i>
-                                <span id="submit-text">Publier & Capturer Leads</span>
-                            </button>
-                            <button type="button" onclick="saveDraft()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
-                                <i class="fas fa-save mr-2"></i>Brouillon
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Enhanced Preview -->
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h3 class="text-lg font-semibold mb-4 flex items-center">
-                        <i class="fas fa-eye text-purple-600 mr-3"></i>
-                        Aperçu Client-Magnet
-                    </h3>
-                    
-                    <!-- Conversion Prediction -->
-                    <div class="mb-4 p-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-semibold">Prédiction IA</p>
-                                <p class="text-sm opacity-90">Ce post va générer <span class="font-bold" id="predicted-leads">12-18 leads</span></p>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-xl font-bold" id="conversion-score">8.7/10</div>
-                                <div class="text-xs opacity-90">Score conversion</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gray-50 border-l-4 border-blue-500 rounded-lg p-4">
-                        <div class="flex items-start space-x-3 mb-4">
-                            <div class="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-                                <i class="fas fa-crown text-white"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-900">Votre Nom • Expert LinkedIn</h4>
-                                <p class="text-sm text-gray-600">Spécialiste Acquisition Clients • Guadeloupe 🌴</p>
-                                <p class="text-xs text-gray-500">Maintenant • 🌍</p>
-                            </div>
-                        </div>
-                        <div id="preview-content" class="text-gray-800 mb-4">
-                            Votre contenu client-magnet apparaîtra ici...
-                        </div>
-                        <div id="preview-lead-magnet" class="mb-4 hidden">
-                            <div class="p-3 bg-gradient-to-r from-pink-100 to-purple-100 rounded-lg border border-pink-300">
-                                <div class="flex items-center space-x-3">
-                                    <i class="fas fa-gift text-pink-600 text-xl"></i>
-                                    <div>
-                                        <p class="font-semibold text-pink-900">🎁 Ressource Gratuite</p>
-                                        <p class="text-sm text-pink-700" id="preview-lead-magnet-text">Checklist "10 Erreurs LinkedIn à Éviter"</p>
-                                    </div>
-                                    <button class="px-4 py-2 bg-pink-600 text-white rounded-lg text-sm font-medium">
-                                        Télécharger
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between pt-3 border-t border-gray-200">
-                            <div class="flex space-x-6 text-sm text-gray-600">
-                                <span><i class="far fa-thumbs-up mr-1"></i><span id="predicted-likes">47</span> J'aime</span>
-                                <span><i class="far fa-comment mr-1"></i><span id="predicted-comments">12</span> Commentaires</span>
-                                <span><i class="fas fa-share mr-1"></i><span id="predicted-shares">8</span> Partages</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODULE NETWORKING -->
-        <div id="networking-module" class="module-content hidden">
-            <div class="grid lg:grid-cols-2 gap-8">
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h3 class="text-lg font-semibold mb-6 flex items-center">
-                        <i class="fas fa-users text-green-600 mr-3"></i>
-                        Smart Networking Guadeloupe
-                    </h3>
-                    
-                    <div class="mb-6 p-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg">
-                        <h4 class="font-semibold mb-3">🌴 Avantage Géographique</h4>
-                        <div class="grid grid-cols-2 gap-3 text-sm">
-                            <div>Décalage GMT-4: <span class="font-bold">Optimal</span></div>
-                            <div>Réseau Caraïbes: <span class="font-bold">Unique</span></div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <button onclick="findLocalProspects()" class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
-                            <i class="fas fa-map-marker-alt mr-2"></i>Prospects DOM-TOM
-                        </button>
-                        <button onclick="findFranceProspects()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-globe-europe mr-2"></i>Prospects France
+    <!-- Modal Optimiseur -->
+    <div id="optimizerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800">🚀 Optimiseur de Contenu</h2>
+                        <button onclick="closeOptimizerModal()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
+                
+                <div class="p-6">
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Collez votre contenu à optimiser</label>
+                        <textarea id="contentToOptimize" placeholder="Collez ici le contenu que vous voulez améliorer..." class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="8"></textarea>
+                    </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h3 class="text-lg font-semibold mb-6">Connexions Recommandées</h3>
-                    <div id="recommended-connections" class="space-y-3">
-                        <div class="p-3 bg-gray-50 rounded-lg">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h5 class="font-semibold">Marie Dubois</h5>
-                                    <p class="text-sm text-gray-600">CEO • Martinique</p>
-                                </div>
-                                <button onclick="sendConnection('Marie Dubois')" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm">
-                                    Connecter
-                                </button>
+                    <button onclick="analyzeContent()" class="bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-6 py-3 rounded-lg hover:from-indigo-600 hover:to-blue-600 transition-all duration-300 font-semibold mb-6">
+                        🔍 Analyser et Optimiser
+                    </button>
+
+                    <div id="optimizationResults" class="hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <h3 class="font-bold text-red-800 mb-3">❌ Points à améliorer</h3>
+                                <div id="improvementPoints" class="space-y-2"></div>
+                            </div>
+                            
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                <h3 class="font-bold text-green-800 mb-3">✅ Suggestions d'amélioration</h3>
+                                <div id="suggestions" class="space-y-2"></div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- MODULE IA OPTIMIZER -->
-        <div id="optimizer-module" class="module-content hidden">
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="text-lg font-semibold mb-6 flex items-center">
-                    <i class="fas fa-brain text-purple-600 mr-3"></i>
-                    IA Optimizer - Temps Réel
-                </h3>
-                
-                <div class="grid lg:grid-cols-3 gap-6">
-                    <div class="p-4 bg-purple-50 rounded-lg">
-                        <h4 class="font-semibold text-purple-900 mb-3">🤖 Analyse IA</h4>
-                        <div class="space-y-2 text-sm">
-                            <div>Meilleur timing: <span class="font-bold">14h30 GMT-4</span></div>
-                            <div>Hashtags optimaux: <span class="font-bold">7 détectés</span></div>
-                            <div>Score viral prévu: <span class="font-bold">9.1/10</span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="p-4 bg-blue-50 rounded-lg">
-                        <h4 class="font-semibold text-blue-900 mb-3">📊 Prédictions</h4>
-                        <div class="space-y-2 text-sm">
-                            <div>Engagement: <span class="font-bold text-green-600">+127%</span></div>
-                            <div>Portée: <span class="font-bold text-blue-600">15.2K</span></div>
-                            <div>Leads: <span class="font-bold text-purple-600">18-24</span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="p-4 bg-green-50 rounded-lg">
-                        <h4 class="font-semibold text-green-900 mb-3">⚡ Actions Auto</h4>
-                        <div class="space-y-2 text-sm">
-                            <div>✅ Timing optimisé</div>
-                            <div>✅ Hashtags ajustés</div>
-                            <div>✅ CTA personnalisé</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODULE GROWTH HACKER -->
-        <div id="growth-module" class="module-content hidden">
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="text-lg font-semibold mb-6 flex items-center">
-                    <i class="fas fa-rocket text-orange-600 mr-3"></i>
-                    Growth Hacker - Viral Engine
-                </h3>
-                
-                <div class="grid lg:grid-cols-2 gap-6">
-                    <div class="p-4 bg-orange-50 rounded-lg">
-                        <h4 class="font-semibold text-orange-900 mb-3">🚀 Stratégies Virales</h4>
-                        <div class="space-y-3">
-                            <button onclick="createViralContent()" class="w-full bg-orange-600 text-white py-2 rounded-lg">
-                                Contenu Viral IA
-                            </button>
-                            <button onclick="trendAnalysis()" class="w-full bg-red-600 text-white py-2 rounded-lg">
-                                Analyse Tendances
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="p-4 bg-red-50 rounded-lg">
-                        <h4 class="font-semibold text-red-900 mb-3">📈 Métriques Growth</h4>
-                        <div class="space-y-2 text-sm">
-                            <div>Croissance followers: <span class="font-bold text-green-600">+234%</span></div>
-                            <div>Taux viral: <span class="font-bold text-orange-600">12.4%</span></div>
-                            <div>ROI campagnes: <span class="font-bold text-red-600">487%</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODULE LEAD MAGNET FACTORY -->
-        <div id="leadmagnet-module" class="module-content hidden">
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="text-lg font-semibold mb-6 flex items-center">
-                    <i class="fas fa-magnet text-pink-600 mr-3"></i>
-                    Lead Magnet Factory
-                </h3>
-                
-                <div class="grid lg:grid-cols-3 gap-6">
-                    <div class="p-4 bg-pink-50 rounded-lg">
-                        <h4 class="font-semibold text-pink-900 mb-3">🧲 Créateur Magnets</h4>
-                        <div class="space-y-3">
-                            <button onclick="createChecklist()" class="w-full bg-pink-600 text-white py-2 rounded-lg text-sm">
-                                📋 Checklist Interactive
-                            </button>
-                            <button onclick="createTemplate()" class="w-full bg-purple-600 text-white py-2 rounded-lg text-sm">
-                                📄 Template Prêt
-                            </button>
-                            <button onclick="createCalculator()" class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm">
-                                🧮 Calculateur ROI
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="p-4 bg-blue-50 rounded-lg">
-                        <h4 class="font-semibold text-blue-900 mb-3">📊 Performance</h4>
-                        <div class="space-y-2 text-sm">
-                            <div>Taux conversion: <span class="font-bold text-green-600">34.7%</span></div>
-                            <div>Leads ce mois: <span class="font-bold text-blue-600">127</span></div>
-                            <div>Magnets actifs: <span class="font-bold text-purple-600">8</span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="p-4 bg-green-50 rounded-lg">
-                        <h4 class="font-semibold text-green-900 mb-3">🎯 Top Performers</h4>
-                        <div class="space-y-2 text-sm">
-                            <div>Checklist LinkedIn: <span class="font-bold">42%</span></div>
-                            <div>Template Posts: <span class="font-bold">38%</span></div>
-                            <div>Guide Clients: <span class="font-bold">35%</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODULE SALES ACCELERATOR -->
-        <div id="sales-module" class="module-content hidden">
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="text-lg font-semibold mb-6 flex items-center">
-                    <i class="fas fa-chart-line text-emerald-600 mr-3"></i>
-                    Sales Accelerator
-                </h3>
-                
-                <div class="grid lg:grid-cols-2 gap-6">
-                    <div class="p-4 bg-emerald-50 rounded-lg">
-                        <h4 class="font-semibold text-emerald-900 mb-3">💰 Pipeline</h4>
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span>Prospects qualifiés:</span>
-                                <span class="font-bold">23</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>En négociation:</span>
-                                <span class="font-bold">7</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Revenus prévus:</span>
-                                <span class="font-bold text-green-600">€8,400</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="p-4 bg-teal-50 rounded-lg">
-                        <h4 class="font-semibold text-teal-900 mb-3">🎯 Actions</h4>
-                        <div class="space-y-2">
-                            <button onclick="updatePipeline()" class="w-full bg-emerald-600 text-white py-2 rounded-lg text-sm">
-                                Mettre à jour Pipeline
-                            </button>
-                            <button onclick="generateScript()" class="w-full bg-teal-600 text-white py-2 rounded-lg text-sm">
-                                Script de Vente IA
+                        <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <h3 class="font-bold text-blue-800 mb-3">🎯 Version Optimisée</h3>
+                            <div id="optimizedContent" class="bg-white p-4 rounded border whitespace-pre-wrap"></div>
+                            <button onclick="copyOptimizedContent()" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all">
+                                <i class="fas fa-copy mr-2"></i>Copier la version optimisée
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- MODULE AUTHORITY BUILDER -->
-        <div id="authority-module" class="module-content hidden">
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="text-lg font-semibold mb-6 flex items-center">
-                    <i class="fas fa-crown text-indigo-600 mr-3"></i>
-                    Authority Builder
-                </h3>
-                
-                <div class="grid lg:grid-cols-2 gap-6">
-                    <div class="p-4 bg-indigo-50 rounded-lg">
-                        <h4 class="font-semibold text-indigo-900 mb-3">👑 Score d'Autorité</h4>
-                        <div class="text-center mb-4">
-                            <div class="text-4xl font-bold text-indigo-600">9.2/10</div>
-                            <div class="text-sm text-indigo-700">Expert Reconnu</div>
-                        </div>
-                        <div class="space-y-2 text-sm">
-                            <div>Influence: <span class="font-bold text-green-600">Top 1%</span></div>
-                            <div>Crédibilité: <span class="font-bold text-blue-600">94.7%</span></div>
-                        </div>
-                    </div>
-                    
-                    <div class="p-4 bg-purple-50 rounded-lg">
-                        <h4 class="font-semibold text-purple-900 mb-3">🚀 Stratégies</h4>
-                        <div class="space-y-2">
-                            <button onclick="createThoughtLeadership()" class="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm">
-                                Thought Leadership
-                            </button>
-                            <button onclick="generateControversy()" class="w-full bg-purple-600 text-white py-2 rounded-lg text-sm">
-                                Controverse Contrôlée
-                            </button>
-                        </div>
+    <!-- Modal Profil -->
+    <div id="profileModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl max-w-2xl w-full">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800">👤 Mon Profil</h2>
+                        <button onclick="closeProfileModal()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- MODULE CONVERSION TRACKER -->
-        <div id="conversion-module" class="module-content hidden">
-            <div class="bg-white rounded-xl shadow-sm p-6">
-                <h3 class="text-lg font-semibold mb-6 flex items-center">
-                    <i class="fas fa-bullseye text-yellow-600 mr-3"></i>
-                    Conversion Tracker
-                </h3>
                 
-                <div class="grid lg:grid-cols-3 gap-6">
-                    <div class="p-4 bg-yellow-50 rounded-lg">
-                        <h4 class="font-semibold text-yellow-900 mb-3">💰 Attribution</h4>
-                        <div class="space-y-2 text-sm">
-                            <div>Revenus attribués: <span class="font-bold text-green-600">€12,847</span></div>
-                            <div>ROI LinkedIn: <span class="font-bold text-blue-600">487%</span></div>
-                            <div>Clients acquis: <span class="font-bold text-purple-600">23</span></div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nom complet</label>
+                            <input type="text" id="editName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Secteur d'activité</label>
+                            <input type="text" id="editSector" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Objectif principal</label>
+                            <select id="editGoal" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="leads">Générer des leads</option>
+                                <option value="ventes">Augmenter les ventes</option>
+                                <option value="autorite">Établir mon autorité</option>
+                                <option value="reseau">Développer mon réseau</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Zone géographique</label>
+                            <select id="editZone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="france">France métropolitaine</option>
+                                <option value="international">International</option>
+                                <option value="domtom">DOM-TOM</option>
+                                <option value="europe">Europe</option>
+                                <option value="afrique">Afrique</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Lien de profil LinkedIn</label>
+                            <input type="url" id="editLinkedin" placeholder="https://www.linkedin.com/in/ton-profil" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                            <p class="text-xs text-gray-500 mt-1">Ex: https://www.linkedin.com/in/prenom-nom</p>
                         </div>
                     </div>
                     
-                    <div class="p-4 bg-orange-50 rounded-lg">
-                        <h4 class="font-semibold text-orange-900 mb-3">🔮 Prédictions</h4>
-                        <div class="space-y-2 text-sm">
-                            <div>Revenus 30j: <span class="font-bold text-green-600">€8,400</span></div>
-                            <div>Nouveaux clients: <span class="font-bold text-blue-600">12</span></div>
-                            <div>Confiance: <span class="font-bold text-purple-600">91%</span></div>
-                        </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Audience cible</label>
+                        <textarea id="editAudience" placeholder="Décrivez votre audience idéale..." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="3"></textarea>
                     </div>
-                    
-                    <div class="p-4 bg-red-50 rounded-lg">
-                        <h4 class="font-semibold text-red-900 mb-3">🔥 Prospects Chauds</h4>
-                        <div class="space-y-2 text-sm">
-                            <div>Ultra-chauds: <span class="font-bold text-red-600">3 (97%)</span></div>
-                            <div>Chauds: <span class="font-bold text-orange-600">8 (73%)</span></div>
-                            <div>Tièdes: <span class="font-bold text-yellow-600">15 (45%)</span></div>
-                        </div>
+
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button onclick="closeProfileModal()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all">
+                            Annuler
+                        </button>
+                        <button onclick="saveProfile()" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all">
+                            Sauvegarder
+                        </button>
                     </div>
                 </div>
             </div>
@@ -780,513 +535,627 @@
     </div>
 
     <script>
-        // Global variables
-        let currentContentType = 'authority';
+        // Variables globales
+        let userProfile = {
+            name: 'Utilisateur',
+            sector: 'Non défini',
+            goal: 'leads',
+            zone: 'france',
+            audience: '',
+            linkedin: ''
+        };
 
-        // Module management
-        function showModule(moduleName) {
-            // Hide all modules
-            document.querySelectorAll('.module-content').forEach(module => {
-                module.classList.add('hidden');
-            });
-            
-            // Show selected module
-            const targetModule = document.getElementById(moduleName + '-module');
-            if (targetModule) {
-                targetModule.classList.remove('hidden');
+        let stats = {
+            posts: 0,
+            leads: 0,
+            engagement: 0,
+            authority: 0
+        };
+
+        // Frameworks de contenu
+        const frameworks = {
+            citron: {
+                name: "🍋 CITRON PRESSÉ",
+                description: "Fail + Solution",
+                template: (topic, goal, details) => `🍋 J'ai fait cette ERREUR dans ${topic}... Voici comment l'éviter !
+
+❌ Le problème que j'ai rencontré :
+${details || `[Décrivez votre échec/erreur dans ${topic}]`}
+
+💡 Ce que j'ai appris :
+• [Leçon 1]
+• [Leçon 2] 
+• [Leçon 3]
+
+✅ Ma solution maintenant :
+[Votre méthode/processus amélioré]
+
+🎯 Résultat :
+[Bénéfice concret obtenu]
+
+💬 Et vous, avez-vous déjà fait cette erreur ?
+
+#${topic.replace(/\s+/g, '')} #Entrepreneuriat #Conseils`
+            },
+            reverse: {
+                name: "🔄 REVERSE THINKING",
+                description: "Casser les Mythes",
+                template: (topic, goal, details) => `🔄 STOP ! Tout le monde se trompe sur ${topic}
+
+❌ Ce qu'on vous dit :
+"[Croyance populaire dans votre secteur]"
+
+✅ La VRAIE réalité :
+${details || `[Votre vision contraire avec preuves]`}
+
+🔍 Pourquoi cette différence ?
+• [Raison 1]
+• [Raison 2]
+• [Raison 3]
+
+💰 Ce que ça change concrètement :
+[Bénéfice/économie/gain]
+
+🎯 Mon conseil :
+[Votre recommandation alternative]
+
+💬 Êtes-vous d'accord avec cette approche ?
+
+#${topic.replace(/\s+/g, '')} #Innovation #Disruption`
+            },
+            ignorance: {
+                name: "🙈 IGNORANCE ASSUMÉE",
+                description: "Confession Utile",
+                template: (topic, goal, details) => `🙈 CONFESSION : Je ne maîtrise pas tout en ${topic}...
+
+Et c'est exactement pourquoi je réussis mieux !
+
+❌ Ce que je ne sais PAS faire :
+${details || `[Avouez vos limites dans ${topic}]`}
+
+✅ Mais voici ce que je fais À LA PLACE :
+• [Stratégie alternative 1]
+• [Stratégie alternative 2]
+• [Stratégie alternative 3]
+
+🎯 Résultat surprenant :
+[Votre succès malgré vos "lacunes"]
+
+💡 La leçon :
+Parfois, ne pas tout savoir nous force à être plus créatifs !
+
+💬 Vous aussi, vous avez des "lacunes" qui sont devenues des forces ?
+
+#${topic.replace(/\s+/g, '')} #Authenticité #Mindset`
+            },
+            kit: {
+                name: "🛠️ KIT DE SURVIE",
+                description: "Freebie qui Convertit",
+                template: (topic, goal, details) => `🛠️ CADEAU : Mon kit de survie ${topic} (100% GRATUIT)
+
+🎁 Ce que vous recevez :
+• [Ressource 1]
+• [Ressource 2]
+• [Ressource 3]
+• [Bonus surprise]
+
+✅ Parfait si vous voulez :
+${details || `[Bénéfices spécifiques pour ${topic}]`}
+
+⚡ Utilisable immédiatement :
+[Promesse de résultat rapide]
+
+🔥 Valeur réelle : [X]€
+👉 Votre prix : 0€
+
+💌 Pour le recevoir :
+Commentez "KIT" et je vous l'envoie en MP !
+
+⏰ Disponible 48h seulement
+
+#${topic.replace(/\s+/g, '')} #Gratuit #Ressources`
+            },
+            aida: {
+                name: "🎯 AIDA",
+                description: "Attention → Action",
+                template: (topic, goal, details) => `🚨 ATTENTION : Ceci va changer votre approche du ${topic}
+
+💡 INTÉRÊT :
+${details || `[Statistique/fait surprenant sur ${topic}]`}
+
+🔥 DÉSIR :
+Imaginez si vous pouviez :
+• [Bénéfice 1]
+• [Bénéfice 2] 
+• [Bénéfice 3]
+
+✅ ACTION :
+Voici exactement comment faire :
+[Étape 1]
+[Étape 2]
+[Étape 3]
+
+🎯 Résultat garanti :
+[Promesse de résultat]
+
+👉 Prêt(e) à essayer ? Dites-moi en commentaire !
+
+#${topic.replace(/\s+/g, '')} #Action #Résultats`
+            },
+            pas: {
+                name: "🔥 PAS",
+                description: "Problème → Solution",
+                template: (topic, goal, details) => `🔥 PROBLÈME : Vous galérez avec ${topic} ?
+
+😤 Ça vous énerve aussi quand :
+${details || `[Frustrations communes dans ${topic}]`}
+
+⚡ Ça empire parce que :
+• [Conséquence 1]
+• [Conséquence 2]
+• [Conséquence 3]
+
+💰 Coût de l'inaction :
+[Ce que ça coûte de ne rien faire]
+
+✅ SOLUTION :
+Voici ma méthode en 3 étapes :
+[Étape 1]
+[Étape 2]
+[Étape 3]
+
+🎯 Résultat :
+[Transformation obtenue]
+
+💬 Vous reconnaissez-vous dans ce problème ?
+
+#${topic.replace(/\s+/g, '')} #Solution #Transformation`
+            },
+            bab: {
+                name: "🌉 BAB",
+                description: "Before → After → Bridge",
+                template: (topic, goal, details) => `🌉 AVANT vs APRÈS : Ma transformation ${topic}
+
+❌ AVANT :
+${details || `[Votre situation difficile dans ${topic}]`}
+
+✅ APRÈS :
+[Votre situation actuelle améliorée]
+
+🌉 LE PONT (comment j'y suis arrivé) :
+• [Changement clé 1]
+• [Changement clé 2]
+• [Changement clé 3]
+
+⏰ Temps nécessaire :
+[Durée de la transformation]
+
+💡 Le déclic :
+[Moment/réalisation qui a tout changé]
+
+🎯 Vous aussi vous pouvez :
+[Encouragement + première étape]
+
+💬 Où en êtes-vous dans votre parcours ?
+
+#${topic.replace(/\s+/g, '')} #Transformation #Avant-Après`
+            },
+            star: {
+                name: "⭐ STAR",
+                description: "Situation → Résultat",
+                template: (topic, goal, details) => `⭐ HISTOIRE VRAIE : Comment j'ai résolu ce défi ${topic}
+
+🎯 SITUATION :
+${details || `[Contexte/défi rencontré dans ${topic}]`}
+
+📋 TÂCHE :
+Ce que je devais accomplir :
+[Objectif précis]
+
+🚀 ACTION :
+Voici ce que j'ai fait :
+• [Action 1]
+• [Action 2]
+• [Action 3]
+
+🏆 RÉSULTAT :
+[Résultat concret obtenu]
+
+💡 Leçons apprises :
+[Insights pour les autres]
+
+🎯 Applicable pour vous si :
+[Conditions/contexte similaire]
+
+💬 Vous avez vécu une situation similaire ?
+
+#${topic.replace(/\s+/g, '')} #Storytelling #Résultats`
+            },
+            miel: {
+                name: "🍯 MIEL",
+                description: "Moment → Leçon",
+                template: (topic, goal, details) => `🍯 CE MOMENT qui a changé ma vision du ${topic}
+
+⏰ MOMENT :
+${details || `[Moment précis/anecdote dans ${topic}]`}
+
+💡 INSIGHT :
+Ce que j'ai réalisé à cet instant :
+[Prise de conscience]
+
+❤️ ÉMOTION :
+Ce que j'ai ressenti :
+[Émotion vécue]
+
+📚 LEÇON :
+Ce que ça m'a appris :
+• [Apprentissage 1]
+• [Apprentissage 2]
+• [Apprentissage 3]
+
+🎯 Application concrète :
+[Comment utiliser cette leçon]
+
+💫 Impact sur ma vie :
+[Changement durable]
+
+💬 Quel moment a marqué votre parcours ?
+
+#${topic.replace(/\s+/g, '')} #Inspiration #Leçon`
             }
-            
-            // Update module cards visual state
-            document.querySelectorAll('.module-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            
-            // Find and highlight the clicked card
-            const clickedCard = event.target.closest('.module-card');
-            if (clickedCard) {
-                clickedCard.classList.add('active');
-            }
+        };
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            updateStats();
+            updateProfileDisplay();
+        });
+
+        // Gestion du profil
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileMenu');
+            menu.classList.toggle('hidden');
         }
 
-        // Content type management
-        function setContentType(type) {
-            currentContentType = type;
+        function editProfile() {
+            document.getElementById('editName').value = userProfile.name;
+            document.getElementById('editSector').value = userProfile.sector;
+            document.getElementById('editGoal').value = userProfile.goal;
+            document.getElementById('editZone').value = userProfile.zone;
+            document.getElementById('editAudience').value = userProfile.audience;
+            document.getElementById('editLinkedin').value = userProfile.linkedin || '';
             
-            // Update buttons
-            document.querySelectorAll('[id^="type-"]').forEach(btn => {
-                btn.classList.remove('border-purple-600', 'bg-purple-50', 'text-purple-700');
-                btn.classList.add('border-gray-200', 'text-gray-600');
-            });
-            
-            const activeBtn = document.getElementById('type-' + type);
-            if (activeBtn) {
-                activeBtn.classList.add('border-purple-600', 'bg-purple-50', 'text-purple-700');
-                activeBtn.classList.remove('border-gray-200', 'text-gray-600');
-            }
-            
-            updatePredictions();
+            document.getElementById('profileModal').classList.remove('hidden');
+            document.getElementById('profileMenu').classList.add('hidden');
         }
 
-        // Update predictions
-        function updatePredictions() {
-            const predictions = {
-                authority: { probability: '87%', engagement: '9.2%', leads: '12-18', likes: '47', comments: '12', shares: '8', score: '8.7' },
-                problem: { probability: '76%', engagement: '7.8%', leads: '8-14', likes: '34', comments: '8', shares: '5', score: '7.4' },
-                solution: { probability: '82%', engagement: '8.5%', leads: '10-16', likes: '41', comments: '10', shares: '7', score: '8.1' }
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        function saveProfile() {
+            userProfile.name = document.getElementById('editName').value || 'Utilisateur';
+            userProfile.sector = document.getElementById('editSector').value || 'Non défini';
+            userProfile.goal = document.getElementById('editGoal').value;
+            userProfile.zone = document.getElementById('editZone').value;
+            userProfile.audience = document.getElementById('editAudience').value;
+            userProfile.linkedin = (document.getElementById('editLinkedin').value || '').trim();
+            
+            saveUserData();
+            updateProfileDisplay();
+            closeProfileModal();
+            
+            showNotification('✅ Profil mis à jour avec succès !', 'success');
+        }
+
+        function updateProfileDisplay() {
+            document.getElementById('userName').textContent = userProfile.name;
+            document.getElementById('profileName').textContent = userProfile.name;
+            document.getElementById('profileSector').textContent = userProfile.sector;
+
+            // Met à jour/ajoute un lien rapide vers le profil LinkedIn dans le menu
+            const menu = document.getElementById('profileMenu');
+            let linkBtn = document.getElementById('profileLinkedinBtn');
+            if (!linkBtn) {
+                linkBtn = document.createElement('a');
+                linkBtn.id = 'profileLinkedinBtn';
+                linkBtn.className = 'w-full block px-4 py-2 hover:bg-gray-50 text-blue-600';
+                linkBtn.innerHTML = '<i class="fab fa-linkedin mr-2"></i>Voir mon profil LinkedIn';
+                linkBtn.target = '_blank';
+                linkBtn.rel = 'noopener noreferrer';
+                const container = menu.querySelector('.py-2');
+                container.insertBefore(linkBtn, container.firstChild);
+            }
+            linkBtn.href = userProfile.linkedin || '#';
+            linkBtn.style.opacity = userProfile.linkedin ? '1' : '0.5';
+            linkBtn.style.pointerEvents = userProfile.linkedin ? 'auto' : 'none';
+        }
+
+        function viewStats() {
+            showNotification('📊 Statistiques détaillées bientôt disponibles !', 'info');
+            document.getElementById('profileMenu').classList.add('hidden');
+        }
+
+        function exportData() {
+            const data = {
+                profile: userProfile,
+                stats: stats,
+                exportDate: new Date().toISOString()
             };
             
-            const pred = predictions[currentContentType] || predictions.authority;
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'linkedin-master-suite-data.json';
+            a.click();
             
-            // Update UI elements safely
-            const updateElement = (id, value) => {
-                const element = document.getElementById(id);
-                if (element) element.textContent = value;
-            };
-            
-            updateElement('client-probability', pred.probability);
-            updateElement('engagement-prediction', pred.engagement);
-            updateElement('leads-estimation', pred.leads);
-            updateElement('predicted-leads', pred.leads);
-            updateElement('predicted-likes', pred.likes);
-            updateElement('predicted-comments', pred.comments);
-            updateElement('predicted-shares', pred.shares);
-            updateElement('conversion-score', pred.score);
+            showNotification('📥 Données exportées avec succès !', 'success');
+            document.getElementById('profileMenu').classList.add('hidden');
         }
 
-        // Character count and preview
-        function updateCharCount() {
-            const content = document.getElementById('post-content');
-            const charCount = document.getElementById('char-count');
-            if (content && charCount) {
-                charCount.textContent = content.value.length;
-                updatePreview();
+        function logout() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                localStorage.clear();
+                window.location.hash = '#logout';
+                window.location.reload();
             }
         }
 
-        function updatePreview() {
-            const content = document.getElementById('post-content');
-            const previewContent = document.getElementById('preview-content');
+        // Gestion des frameworks
+        function openFrameworkGenerator() {
+            document.getElementById('frameworkModal').classList.remove('hidden');
+        }
+
+        function closeFrameworkModal() {
+            document.getElementById('frameworkModal').classList.add('hidden');
+            document.getElementById('frameworkGenerator').classList.add('hidden');
+        }
+
+        function selectFramework(type) {
+            const framework = frameworks[type];
+            document.getElementById('selectedFramework').textContent = framework.name;
+            document.getElementById('frameworkGenerator').classList.remove('hidden');
             
-            if (content && previewContent) {
-                if (content.value.trim()) {
-                    previewContent.innerHTML = content.value.replace(/\n/g, '<br>');
-                } else {
-                    previewContent.textContent = 'Votre contenu client-magnet apparaîtra ici...';
+            // Scroll vers le générateur
+            document.getElementById('frameworkGenerator').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateFrameworkContent() {
+            const topic = document.getElementById('frameworkTopic').value;
+            const goal = document.getElementById('frameworkGoal').value;
+            const details = document.getElementById('frameworkDetails').value;
+            const selectedType = document.getElementById('selectedFramework').textContent;
+            
+            if (!topic) {
+                showNotification('⚠️ Veuillez renseigner votre sujet/secteur', 'warning');
+                return;
+            }
+
+            // Trouver le framework sélectionné
+            let frameworkType = null;
+            for (const [key, framework] of Object.entries(frameworks)) {
+                if (framework.name === selectedType) {
+                    frameworkType = key;
+                    break;
                 }
             }
-        }
 
-        // Lead magnet functions
-        function toggleLeadMagnet() {
-            const isChecked = document.getElementById('include-lead-magnet')?.checked;
-            const options = document.getElementById('lead-magnet-options');
-            const preview = document.getElementById('preview-lead-magnet');
-            
-            if (options && preview) {
-                if (isChecked) {
-                    options.classList.remove('hidden');
-                    preview.classList.remove('hidden');
-                    updateLeadMagnetPreview();
-                } else {
-                    options.classList.add('hidden');
-                    preview.classList.add('hidden');
-                }
+            if (frameworkType) {
+                const content = frameworks[frameworkType].template(topic, goal, details);
+                document.getElementById('frameworkOutput').textContent = content;
+                document.getElementById('frameworkResult').classList.remove('hidden');
+                
+                // Mettre à jour les stats
+                stats.posts++;
+                updateStats();
+                saveUserData();
+                
+                showNotification('🎉 Contenu généré avec succès !', 'success');
             }
         }
 
-        function updateLeadMagnetPreview() {
-            const select = document.getElementById('lead-magnet-select');
-            const previewText = document.getElementById('preview-lead-magnet-text');
+        function optimizeFrameworkContent() {
+            const currentContent = document.getElementById('frameworkOutput').textContent;
             
-            if (select && previewText) {
-                previewText.textContent = select.value;
-            }
-        }
-
-        // AI Scheduling
-        function toggleAIScheduling() {
-            const isChecked = document.getElementById('ai-schedule-toggle')?.checked;
-            const info = document.getElementById('ai-schedule-info');
-            const submitText = document.getElementById('submit-text');
-            
-            if (info && submitText) {
-                if (isChecked) {
-                    info.classList.remove('hidden');
-                    submitText.textContent = 'Publier au Timing IA Optimal';
-                } else {
-                    info.classList.add('hidden');
-                    submitText.textContent = 'Publier & Capturer Leads';
-                }
-            }
-        }
-
-        // Content generation functions
-        function generateClientMagnetContent() {
-            const templates = [
-                "🚀 Comment j'ai généré €12,847 en 3 mois grâce à LinkedIn depuis la Guadeloupe\n\nBeaucoup pensent qu'être en DOM-TOM est un handicap pour le business...\n\nErreur ! C'est notre plus grand avantage :\n\n✅ Décalage horaire stratégique (GMT-4)\n✅ Perspective unique Caraïbes-France\n✅ Moins de concurrence directe\n✅ Positionnement différenciant\n\nMa méthode en 4 étapes :\n\n1️⃣ Exploiter l'avantage géographique\n2️⃣ Créer du contenu \"pont culturel\"\n3️⃣ Cibler intelligemment (France + DOM-TOM)\n4️⃣ Convertir avec l'authenticité antillaise\n\nRésultats :\n• 23 nouveaux clients\n• ROI de 487%\n• Taux de conversion 34.7%",
-                "💡 Pourquoi 90% des entrepreneurs échouent sur LinkedIn (et comment éviter leurs erreurs)\n\nAprès avoir analysé 500+ profils LinkedIn d'entrepreneurs...\n\nJ'ai découvert les 3 erreurs fatales :\n\n❌ Erreur #1 : Vendre dès le premier contact\n❌ Erreur #2 : Copier les stratégies US/Europe sans adaptation\n❌ Erreur #3 : Ignorer l'avantage géographique\n\n✅ Ma méthode \"Caraïbes-to-Client\" :\n\n• Étape 1 : Positionnement unique territorial\n• Étape 2 : Contenu \"pont interculturel\"\n• Étape 3 : Timing optimisé décalage horaire\n• Étape 4 : Conversion authentique antillaise"
+            // Simulation d'optimisation
+            const optimizations = [
+                '✨ Hook renforcé pour plus d\'impact',
+                '📈 Hashtags optimisés pour la portée',
+                '🎯 Call-to-action plus engageant',
+                '💡 Structure améliorée pour la lisibilité'
             ];
             
-            const content = document.getElementById('post-content');
-            if (content) {
-                const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
-                content.value = randomTemplate;
-                updateCharCount();
-                
-                // Show success animation
-                const button = event.target;
-                button.classList.add('success-animation');
-                setTimeout(() => button.classList.remove('success-animation'), 600);
-            }
-        }
-
-        function addClientMagnetHashtags() {
-            const content = document.getElementById('post-content');
-            if (content) {
-                const hashtags = '\n\n#LinkedIn #AcquisitionClients #ExpertiseGuadeloupe #BusinessCaraïbes #MarketingDigital #Consulting #France #DOMTOM';
-                content.value += hashtags;
-                updateCharCount();
-            }
-        }
-
-        function addCallToAction() {
-            const content = document.getElementById('post-content');
-            if (content) {
-                const cta = '\n\n💡 Vous voulez des résultats similaires ?\n📩 Envoyez-moi un message privé avec "LINKEDIN" et je vous partage ma stratégie complète.\n\n🎁 Bonus : Recevez gratuitement mon guide "10 Clients en 30 Jours via LinkedIn"';
-                content.value += cta;
-                updateCharCount();
-            }
-        }
-
-        // Form submission
-        function createPost(event) {
-            event.preventDefault();
+            let optimizedContent = currentContent;
             
-            const content = document.getElementById('post-content').value;
+            // Ajouter des émojis si manquants
+            if (!optimizedContent.includes('👉')) {
+                optimizedContent += '\n\n👉 Sauvegardez ce post si il vous a plu !';
+            }
+            
+            document.getElementById('frameworkOutput').textContent = optimizedContent;
+            
+            showNotification('🚀 Contenu optimisé ! ' + optimizations[Math.floor(Math.random() * optimizations.length)], 'success');
+        }
+
+        function copyFrameworkContent() {
+            const content = document.getElementById('frameworkOutput').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showNotification('📋 Contenu copié dans le presse-papier !', 'success');
+            });
+        }
+
+        // Optimiseur de contenu
+        function openOptimizer() {
+            document.getElementById('optimizerModal').classList.remove('hidden');
+        }
+
+        function closeOptimizerModal() {
+            document.getElementById('optimizerModal').classList.add('hidden');
+        }
+
+        function analyzeContent() {
+            const content = document.getElementById('contentToOptimize').value;
+            
             if (!content.trim()) {
-                alert('Veuillez saisir du contenu pour votre post');
+                showNotification('⚠️ Veuillez coller du contenu à analyser', 'warning');
                 return;
             }
-            
-            // Simulate post creation
-            const button = event.target.querySelector('button[type="submit"]');
-            const originalText = button.innerHTML;
-            
-            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Publication en cours...';
-            button.disabled = true;
-            
-            setTimeout(() => {
-                button.innerHTML = '<i class="fas fa-check mr-2"></i>Post publié avec succès !';
-                button.classList.remove('from-purple-600', 'to-pink-600');
-                button.classList.add('from-green-600', 'to-emerald-600');
-                
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                    button.classList.remove('from-green-600', 'to-emerald-600');
-                    button.classList.add('from-purple-600', 'to-pink-600');
-                }, 2000);
-            }, 1500);
-        }
 
-        function saveDraft() {
-            const content = document.getElementById('post-content').value;
-            if (!content.trim()) {
-                alert('Aucun contenu à sauvegarder');
-                return;
+            // Simulation d'analyse
+            const improvements = [
+                'Hook trop faible - manque d\'impact',
+                'Pas de call-to-action clair',
+                'Manque d\'émojis pour la lisibilité',
+                'Paragraphes trop longs',
+                'Pas de hashtags optimisés'
+            ];
+
+            const suggestions = [
+                'Commencer par une question ou statistique choc',
+                'Ajouter "👉 Commentez X si vous êtes d\'accord"',
+                'Utiliser des émojis pour structurer le contenu',
+                'Diviser en points courts et lisibles',
+                'Ajouter 3-5 hashtags pertinents'
+            ];
+
+            // Afficher les résultats
+            document.getElementById('improvementPoints').innerHTML = improvements
+                .map(point => `<div class="text-sm text-red-700">• ${point}</div>`)
+                .join('');
+
+            document.getElementById('suggestions').innerHTML = suggestions
+                .map(suggestion => `<div class="text-sm text-green-700">• ${suggestion}</div>`)
+                .join('');
+
+            // Générer version optimisée
+            let optimized = content;
+            
+            // Ajouter hook si manquant
+            if (!optimized.startsWith('🚨') && !optimized.startsWith('💡') && !optimized.startsWith('🔥')) {
+                optimized = '🚨 ' + optimized;
             }
             
-            // Simulate saving
-            const button = event.target;
-            const originalText = button.innerHTML;
-            
-            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sauvegarde...';
-            
-            setTimeout(() => {
-                button.innerHTML = '<i class="fas fa-check mr-2"></i>Sauvegardé !';
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                }, 1500);
-            }, 800);
-        }
-
-        // LinkedIn Integration Functions
-        function connectLinkedIn() {
-            document.getElementById('linkedin-modal').classList.remove('hidden');
-        }
-
-        function closeLinkedInModal() {
-            document.getElementById('linkedin-modal').classList.add('hidden');
-        }
-
-        function simulateLinkedInConnection(event) {
-            event.preventDefault();
-            
-            const linkedinUrl = document.getElementById('linkedin-url').value;
-            const businessSector = document.getElementById('business-sector').value;
-            const mainGoal = document.getElementById('main-goal').value;
-            
-            if (!linkedinUrl || !document.getElementById('terms-checkbox').checked) {
-                alert('Veuillez remplir tous les champs et accepter les conditions.');
-                return;
+            // Ajouter CTA si manquant
+            if (!optimized.includes('👉') && !optimized.includes('Commentez')) {
+                optimized += '\n\n👉 Êtes-vous d\'accord ? Dites-le moi en commentaire !';
             }
             
-            // Simulate connection process
-            const submitBtn = event.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Connexion en cours...';
-            submitBtn.disabled = true;
-            
-            setTimeout(() => {
-                // Update connection status
-                const connectionDot = document.getElementById('connection-dot');
-                const connectionStatus = document.getElementById('connection-status');
-                const connectBtn = document.getElementById('connect-btn');
-                
-                connectionDot.classList.remove('bg-red-400');
-                connectionDot.classList.add('bg-green-400');
-                connectionStatus.textContent = 'Connecté';
-                connectBtn.textContent = 'Synchroniser';
-                connectBtn.onclick = synchronizeLinkedIn;
-                
-                // Extract profile name from URL
-                const profileMatch = linkedinUrl.match(/linkedin\.com\/in\/([^\/]+)/);
-                const profileName = profileMatch ? profileMatch[1].replace(/-/g, ' ') : 'Votre Profil';
-                
-                // Update preview with real profile info
-                updateProfilePreview(profileName, businessSector, mainGoal);
-                
-                // Close modal
-                closeLinkedInModal();
-                
-                // Show success message
-                showSuccessMessage(`🎉 Profil LinkedIn connecté avec succès !\n\n✅ Synchronisation des données en cours...\n📊 Analyse de votre profil terminée\n🎯 Stratégie personnalisée générée\n\nSecteur: ${businessSector}\nObjectif: ${mainGoal}`);
-                
-                // Reset button
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-            }, 2000);
-        }
-
-        function updateProfilePreview(profileName, sector, goal) {
-            // Update the preview section with real profile data
-            const previewContent = document.getElementById('preview-content');
-            if (previewContent && previewContent.textContent === 'Votre contenu client-magnet apparaîtra ici...') {
-                const capitalizedName = profileName.split(' ').map(word => 
-                    word.charAt(0).toUpperCase() + word.slice(1)
-                ).join(' ');
-                
-                // Update profile display in preview
-                const profileSection = document.querySelector('.bg-gray-50.border-l-4 h4');
-                if (profileSection) {
-                    profileSection.textContent = `${capitalizedName} • Expert ${sector}`;
-                }
+            // Ajouter hashtags si manquants
+            if (!optimized.includes('#')) {
+                optimized += '\n\n#LinkedIn #Business #Conseils';
             }
+
+            document.getElementById('optimizedContent').textContent = optimized;
+            document.getElementById('optimizationResults').classList.remove('hidden');
             
-            // Update dashboard with personalized data
-            updatePersonalizedDashboard(sector, goal);
+            showNotification('🔍 Analyse terminée ! Consultez les suggestions', 'success');
         }
 
-        function updatePersonalizedDashboard(sector, goal) {
-            // Customize predictions based on sector and goal
-            const sectorMultipliers = {
-                'Consulting & Services': { engagement: 1.2, leads: 1.3, conversion: 1.1 },
-                'Marketing Digital': { engagement: 1.4, leads: 1.2, conversion: 1.3 },
-                'Formation & Coaching': { engagement: 1.3, leads: 1.4, conversion: 1.2 },
-                'E-commerce': { engagement: 1.1, leads: 1.1, conversion: 1.4 },
-                'Immobilier': { engagement: 1.0, leads: 1.2, conversion: 1.3 },
-                'Finance & Assurance': { engagement: 0.9, leads: 1.1, conversion: 1.2 }
+        function copyOptimizedContent() {
+            const content = document.getElementById('optimizedContent').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showNotification('📋 Version optimisée copiée !', 'success');
+            });
+        }
+
+        // Autres fonctions
+        function generateAuthorityContent() {
+            const topics = [
+                `💡 3 erreurs que je vois souvent en ${userProfile.sector}`,
+                `🚀 Comment j'ai transformé mon approche du ${userProfile.sector}`,
+                `⚡ La vérité sur ${userProfile.sector} que personne ne dit`,
+                `🎯 Mon framework secret pour réussir en ${userProfile.sector}`
+            ];
+            
+            const selectedTopic = topics[Math.floor(Math.random() * topics.length)];
+            
+            // Mettre à jour les stats
+            stats.authority += 0.3;
+            stats.posts++;
+            updateStats();
+            saveUserData();
+            
+            showNotification(`✨ Sujet généré: "${selectedTopic}"`, 'success');
+        }
+
+        function startProspection() {
+            const prospects = [
+                { name: 'Marie Dubois', sector: 'E-commerce', score: 85 },
+                { name: 'Jean Martin', sector: 'Consulting', score: 92 },
+                { name: 'Sophie Laurent', sector: 'Tech', score: 78 }
+            ];
+            
+            stats.leads += prospects.length;
+            updateStats();
+            saveUserData();
+            
+            showNotification(`🎯 ${prospects.length} nouveaux prospects identifiés !`, 'success');
+        }
+
+        function managePipeline() {
+            const deals = [
+                { client: 'ABC Corp', value: '5000€', stage: 'Négociation' },
+                { client: 'XYZ Ltd', value: '3500€', stage: 'Proposition' }
+            ];
+            
+            showNotification(`💰 ${deals.length} opportunités en cours dans votre pipeline`, 'info');
+        }
+
+        // Fonctions utilitaires
+        function updateStats() {
+            document.getElementById('postsCount').textContent = stats.posts;
+            document.getElementById('leadsCount').textContent = stats.leads;
+            document.getElementById('engagementRate').textContent = Math.min(stats.posts * 2.5, 100).toFixed(1) + '%';
+            document.getElementById('authorityScore').textContent = Math.min(stats.authority * 10, 100).toFixed(1);
+        }
+
+        function saveUserData() {
+            localStorage.setItem('linkedinMasterSuite', JSON.stringify({
+                profile: userProfile,
+                stats: stats
+            }));
+        }
+
+        function loadUserData() {
+            const saved = localStorage.getItem('linkedinMasterSuite');
+            if (saved) {
+                const data = JSON.parse(saved);
+                userProfile = { ...userProfile, ...data.profile };
+                stats = { ...stats, ...data.stats };
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
             };
             
-            const multiplier = sectorMultipliers[sector] || { engagement: 1.0, leads: 1.0, conversion: 1.0 };
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300`;
+            notification.textContent = message;
             
-            // Update predictions with personalized data
-            const baseEngagement = 9.2;
-            const baseLeads = 15;
-            const baseConversion = 34.7;
-            
-            const personalizedEngagement = (baseEngagement * multiplier.engagement).toFixed(1);
-            const personalizedLeads = Math.round(baseLeads * multiplier.leads);
-            const personalizedConversion = (baseConversion * multiplier.conversion).toFixed(1);
-            
-            // Update UI elements
-            const updateElement = (id, value) => {
-                const element = document.getElementById(id);
-                if (element) element.textContent = value;
-            };
-            
-            updateElement('engagement-prediction', personalizedEngagement + '%');
-            updateElement('leads-estimation', `${personalizedLeads-3}-${personalizedLeads+3}`);
-            updateElement('predicted-leads', `${personalizedLeads-3}-${personalizedLeads+3}`);
-        }
-
-        function synchronizeLinkedIn() {
-            const button = event.target;
-            const originalText = button.textContent;
-            
-            button.innerHTML = '<i class="fas fa-sync fa-spin mr-1"></i>Sync...';
+            document.body.appendChild(notification);
             
             setTimeout(() => {
-                showSuccessMessage('🔄 Synchronisation terminée !\n\n✅ 23 nouveaux contacts analysés\n📊 3 prospects chauds détectés\n🎯 2 opportunités immédiates\n💡 Stratégie mise à jour');
-                button.textContent = originalText;
-            }, 1500);
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
         }
 
-        function showSuccessMessage(message) {
-            // Create and show a success modal
-            const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center';
-            modal.innerHTML = `
-                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 p-6">
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-check text-green-600 text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-4">Connexion Réussie !</h3>
-                        <p class="text-gray-600 whitespace-pre-line mb-6">${message}</p>
-                        <button onclick="this.closest('.fixed').remove()" class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:from-green-700 hover:to-emerald-700 transition-all">
-                            Parfait !
-                        </button>
-                    </div>
-                </div>
-            `;
+        // Fermer les menus en cliquant ailleurs
+        document.addEventListener('click', function(event) {
+            const profileMenu = document.getElementById('profileMenu');
+            const profileButton = event.target.closest('[onclick="toggleProfileMenu()"]');
             
-            document.body.appendChild(modal);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (modal.parentNode) {
-                    modal.remove();
-                }
-            }, 5000);
-        }
-
-        // Other module functions (simplified for demo)
-        function findLocalProspects() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Veuillez d\'abord connecter votre profil LinkedIn pour accéder à cette fonctionnalité.');
-                connectLinkedIn();
-                return;
-            }
-            alert('🌴 Recherche de prospects DOM-TOM en cours...\n\n✅ 47 prospects qualifiés trouvés en Guadeloupe, Martinique et Guyane !\n\n🎯 Analyse basée sur votre profil LinkedIn connecté');
-        }
-
-        function findFranceProspects() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Veuillez d\'abord connecter votre profil LinkedIn pour accéder à cette fonctionnalité.');
-                connectLinkedIn();
-                return;
-            }
-            alert('🇫🇷 Recherche de prospects France en cours...\n\n✅ 234 prospects qualifiés trouvés avec connexions DOM-TOM !\n\n🎯 Analyse basée sur votre réseau LinkedIn');
-        }
-
-        function sendConnection(name) {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Veuillez d\'abord connecter votre profil LinkedIn pour envoyer des invitations.');
-                connectLinkedIn();
-                return;
-            }
-            alert(`✅ Demande de connexion envoyée à ${name} avec un message personnalisé basé sur votre profil !`);
-        }
-
-        function createViralContent() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Connectez votre profil LinkedIn pour générer du contenu personnalisé.');
-                connectLinkedIn();
-                return;
-            }
-            alert('🚀 Contenu viral généré basé sur votre profil !\n\n"Opinion impopulaire : LinkedIn n\'est PAS fait pour vendre"\n\nPotentiel viral : 94% • Engagement prévu : +340%\n\n📊 Optimisé pour votre secteur d\'activité');
-        }
-
-        function trendAnalysis() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Connectez votre profil LinkedIn pour une analyse personnalisée des tendances.');
-                connectLinkedIn();
-                return;
-            }
-            alert('📈 Analyse des tendances terminée !\n\n🔥 Trending dans votre secteur : #IA #RemoteWork #Entrepreneuriat\n📊 Opportunité détectée : Contenu IA + Caraïbes\n🎯 Recommandations personnalisées générées');
-        }
-
-        function createChecklist() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Connectez votre profil LinkedIn pour créer des lead magnets personnalisés.');
-                connectLinkedIn();
-                return;
-            }
-            alert('📋 Checklist créée et personnalisée !\n\n"10 Erreurs LinkedIn à Éviter en 2024 - Spécial Votre Secteur"\n\nTaux de conversion prévu : 42.3%\n🎯 Adaptée à votre audience LinkedIn');
-        }
-
-        function createTemplate() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Connectez votre profil LinkedIn pour des templates personnalisés.');
-                connectLinkedIn();
-                return;
-            }
-            alert('📄 Template créé et personnalisé !\n\n"Post Viral en 5 Minutes - Framework IMPACT pour Votre Secteur"\n\nTaux de conversion prévu : 38.7%\n🎯 Optimisé pour votre audience');
-        }
-
-        function createCalculator() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Connectez votre profil LinkedIn pour des calculateurs personnalisés.');
-                connectLinkedIn();
-                return;
-            }
-            alert('🧮 Calculateur créé et personnalisé !\n\n"ROI LinkedIn Calculator - Édition Votre Secteur"\n\nTaux de conversion prévu : 45.1%\n🎯 Adapté à vos métriques LinkedIn');
-        }
-
-        function updatePipeline() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Connectez votre profil LinkedIn pour synchroniser votre pipeline.');
-                connectLinkedIn();
-                return;
-            }
-            alert('💰 Pipeline mis à jour avec vos données LinkedIn !\n\n✅ 3 nouveaux prospects qualifiés détectés\n📈 Valeur pipeline : +€4,200\n🎯 Probabilité closing : 67%\n📊 Basé sur votre activité LinkedIn');
-        }
-
-        function generateScript() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Connectez votre profil LinkedIn pour des scripts personnalisés.');
-                connectLinkedIn();
-                return;
-            }
-            alert('🎯 Script de vente généré et personnalisé !\n\n"Approche Découverte - Spécial Votre Secteur"\n\nTaux de réussite prévu : 73%\n📊 Adapté à votre style LinkedIn');
-        }
-
-        function createThoughtLeadership() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Connectez votre profil LinkedIn pour du contenu d\'autorité personnalisé.');
-                connectLinkedIn();
-                return;
-            }
-            alert('👑 Contenu Thought Leadership créé !\n\n"L\'avenir du business dans votre secteur"\n\nScore autorité : +0.3 points\n🎯 Basé sur votre expertise LinkedIn');
-        }
-
-        function generateControversy() {
-            if (document.getElementById('connection-status').textContent === 'Non connecté') {
-                alert('⚠️ Connectez votre profil LinkedIn pour du contenu controversé personnalisé.');
-                connectLinkedIn();
-                return;
-            }
-            alert('💥 Controverse générée et personnalisée !\n\n"Pourquoi votre secteur fait fausse route sur LinkedIn"\n\nPotentiel viral : 91%\n🎯 Adapté à votre positionnement');
-        }
-
-        // Initialize on load
-        document.addEventListener('DOMContentLoaded', function() {
-            updatePredictions();
-            
-            // Set up event listeners
-            const postContent = document.getElementById('post-content');
-            if (postContent) {
-                postContent.addEventListener('input', updateCharCount);
-            }
-            
-            const leadMagnetSelect = document.getElementById('lead-magnet-select');
-            if (leadMagnetSelect) {
-                leadMagnetSelect.addEventListener('change', updateLeadMagnetPreview);
+            if (!profileButton && !profileMenu.contains(event.target)) {
+                profileMenu.classList.add('hidden');
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9816cf062178e881',t:'MTc1ODI2MTA1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981731bf33d96dd4',t:'MTc1ODI2NTEwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
