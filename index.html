@@ -48,9 +48,12 @@
     <!-- Header -->
     <header class="mb-8">
       <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-bold gradient-text">Client Magnet Studio</h1>
-          <p class="text-slate-300 text-sm mt-1">Crée, optimise et publie du contenu qui attire tes clients idéaux.</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-white/10 grid place-items-center text-lg">🧲</div>
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-bold gradient-text">Client Magnet Studio</h1>
+            <p class="text-slate-300 text-sm mt-1">Crée, optimise et publie du contenu qui attire tes clients idéaux.</p>
+          </div>
         </div>
         <div class="hidden sm:flex items-center gap-3">
           <a href="#" class="text-slate-300 text-sm hover:text-white" onclick="event.preventDefault(); openHelp();">Aide</a>
@@ -125,7 +128,6 @@
 
     <!-- Modules grid -->
     <section class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <!-- Helper: small SVG icon function not used; using inline svgs per card -->
       <!-- Module Cards -->
       <button class="module-card glass text-white rounded-xl p-4 text-left card-hover w-full" onclick="showModule('core')">
         <div class="flex items-center justify-between mb-2">
@@ -149,7 +151,7 @@
         <p class="text-sm opacity-90">Contacts • Géo‑ciblage • Approche</p>
         <div class="flex items-center mt-3 text-xs">
           <span class="w-2 h-2 bg-yellow-300 rounded-full mr-2"></span>
-          <span>Avantage Guadeloupe</span>
+          <span>Ciblage géo actif</span>
         </div>
       </button>
 
@@ -367,10 +369,11 @@
       </div>
     </section>
 
-    <!-- Module Panels (démo simple) -->
+    <!-- Module Panels -->
     <section id="panels" class="mt-10">
       <div class="grid md:grid-cols-2 gap-6">
-        <div id="panel-profile" class="bg-white/5 rounded-xl p-5">
+        <!-- Profil -->
+        <div id="panel-profile" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-3">Profil — Identité & Connexion</h4>
           <form id="profile-form" class="space-y-4" onsubmit="event.preventDefault(); saveProfile();">
             <div class="grid sm:grid-cols-2 gap-4">
@@ -390,7 +393,7 @@
               </div>
               <div>
                 <label class="block text-sm text-slate-300 mb-1">Géos cibles (monde)</label>
-                <input id="pf-geo" type="text" class="w-full px-3 py-2 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-500" placeholder="Ex: France, Guadeloupe, Québec, Maroc">
+                <input id="pf-geo" type="text" class="w-full px-3 py-2 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-500" placeholder="Ex: France, Québec, Maroc, Global">
               </div>
             </div>
             <div>
@@ -399,10 +402,21 @@
             </div>
             <div class="flex flex-wrap gap-3 items-center">
               <button type="submit" class="btn bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-4 py-2 rounded-lg">Enregistrer</button>
-              <button type="button" onclick="simulateLogin()" class="btn bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg" id="btn-login">Se connecter</button>
-              <button type="button" onclick="simulateLogout()" class="btn bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg hidden" id="btn-logout">Se déconnecter</button>
+              <button type="button" onclick="connectLinkedIn()" class="btn bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg" id="btn-login-linkedin">Se connecter à LinkedIn</button>
+              <button type="button" onclick="checkLinkedInSession(false)" class="btn bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg" id="btn-check">Vérifier connexion</button>
+              <button type="button" onclick="logoutLinkedIn()" class="btn bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg hidden" id="btn-logout">Se déconnecter</button>
               <a id="pf-link" href="#" target="_blank" rel="noopener noreferrer" class="text-sm text-sky-300 hover:text-sky-200 underline hidden">Voir mon LinkedIn</a>
-              <span class="text-xs text-slate-300">Synchronisation démo locale (pas d’API LinkedIn).</span>
+            </div>
+            <div class="flex flex-wrap gap-3 items-center mt-2">
+              <label class="text-sm text-slate-300">Rafraîchissement</label>
+              <select id="lk-refresh" class="px-3 py-2 rounded-lg bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-500">
+                <option value="15000">15s</option>
+                <option value="30000">30s</option>
+                <option value="60000" selected>60s</option>
+                <option value="120000">120s</option>
+              </select>
+              <button type="button" onclick="refreshNow(false)" class="btn bg-white/10 hover:bg-white/15 text-white px-4 py-2 rounded-lg">Rafraîchir maintenant</button>
+              <span class="text-xs text-slate-300">Connexion via ton serveur sécurisé (OAuth LinkedIn requis).</span>
             </div>
           </form>
         </div>
@@ -415,35 +429,42 @@
             <button class="btn bg-white/10 hover:bg-white/15 px-3 py-2 rounded-lg" onclick="insertSnippet('Appel à l’action: ');">+ Appel</button>
           </div>
         </div>
+
         <div id="panel-networking" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-2">NET — Actions rapides</h4>
           <p class="text-slate-300 text-sm mb-3">Suggère 5 connexions qualifiées selon tes géos cibles.</p>
           <button class="btn bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg" onclick="proposeConnections()">Proposer</button>
           <ul id="net-list" class="text-sm text-slate-300 mt-3 list-disc pl-5"></ul>
         </div>
+
         <div id="panel-optimizer" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-2">AI — Optimisations</h4>
           <button class="btn bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg" onclick="simulateOptimization()">Analyser</button>
           <p id="ai-result" class="text-sm text-slate-300 mt-3"></p>
         </div>
+
         <div id="panel-growth" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-2">GROWTH — Boost</h4>
           <button class="btn bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg" onclick="boostTips()">Astuces virales</button>
           <ul id="growth-tips" class="text-sm text-slate-300 mt-3 list-disc pl-5"></ul>
         </div>
+
         <div id="panel-leadmagnet" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-2">LEAD — Ressource</h4>
           <button class="btn bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg" onclick="toggleLeadFromPanel()">Activer dans l’aperçu</button>
         </div>
+
         <div id="panel-sales" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-2">SALES — Accélérer</h4>
           <p class="text-sm text-slate-300 mb-3">Script de closing éclair prêt.</p>
           <button class="btn bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg" onclick="insertSnippet('Question de closing: ');">Insérer une question</button>
         </div>
+
         <div id="panel-authority" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-2">AUTH — Autorité</h4>
           <button class="btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg" onclick="insertSnippet('Insight d’expert: ');">Ajouter un insight</button>
         </div>
+
         <div id="panel-conversion" class="hidden bg-white/5 rounded-xl p-5">
           <h4 class="font-semibold mb-2">CONV — Suivi</h4>
           <button class="btn bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg" onclick="simulateAttribution()">Estimer l’attribution</button>
@@ -458,7 +479,7 @@
     </div>
 
     <footer class="mt-12 text-center text-slate-400 text-xs">
-      Interface démo — Icônes remplacées par emojis natives pour une meilleure compatibilité.
+      Démo prête pour intégration LinkedIn via ton serveur. Remplace API_BASE par ton domaine sécurisé.
     </footer>
   </div>
 
@@ -471,7 +492,6 @@
       clearTimeout(window.__toastTimer);
       window.__toastTimer = setTimeout(()=>t.classList.add('hidden'), 2200);
     }
-
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
     // Composer logic
@@ -480,13 +500,11 @@
       const count = el.value.length;
       document.getElementById('char-count').textContent = count;
     }
-
     function updatePreviewContent() {
       const v = document.getElementById('post-content').value.trim();
       document.getElementById('preview-content').textContent =
         v.length ? v : 'Votre contenu client‑magnet apparaîtra ici...';
     }
-
     function addClientMagnetHashtags() {
       const ta = document.getElementById('post-content');
       const tags = ' #clients #B2B #LinkedIn #acquisition';
@@ -496,7 +514,6 @@
       }
       toast('Hashtags ajoutés ✅');
     }
-
     function addCallToAction() {
       const ta = document.getElementById('post-content');
       const cta = '\n\n➡️ Commentez “GUIDE” et je vous l’envoie.';
@@ -514,16 +531,13 @@
       document.getElementById('preview-lead-magnet').classList.toggle('hidden', !checked);
       if (checked) updateLeadMagnetPreview();
     }
-
     function updateLeadMagnetPreview() {
       const sel = document.getElementById('lead-magnet-select');
       if (!sel) return;
       const text = sel.value || 'Ressource';
       document.getElementById('preview-lead-magnet-text').textContent = text.replace(/^.+? /,'').trim() || text;
     }
-
     function downloadLeadMagnet() {
-      // Simple demo file
       const text = document.getElementById('preview-lead-magnet-text').textContent || 'Ressource';
       const blob = new Blob([`Merci ! Voici votre ${text}.\n\n— Client Magnet Studio`], {type: 'text/plain'});
       const url = URL.createObjectURL(blob);
@@ -546,7 +560,7 @@
 
     // Panels switching
     function hideAllPanels(){
-      ['core','networking','optimizer','growth','leadmagnet','sales','authority','conversion']
+      ['profile','core','networking','optimizer','growth','leadmagnet','sales','authority','conversion']
         .forEach(k => {
           const el = document.getElementById('panel-'+k);
           if (el) el.classList.add('hidden');
@@ -557,11 +571,12 @@
       const el = document.getElementById('panel-'+key);
       if (el) { el.classList.remove('hidden'); window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: 'smooth'}); }
     }
+    function openProfile(){ showModule('profile'); }
 
     // Panel actions
     function insertSnippet(text) {
       const ta = document.getElementById('post-content');
-      const start = ta.selectionStart || ta.value.length;
+      const start = ta.selectionStart ?? ta.value.length;
       ta.value = ta.value.slice(0, start) + text + ta.value.slice(start);
       updateCharCount(); updatePreviewContent();
       toast('Ajouté au contenu ✍️');
@@ -579,10 +594,12 @@
       toast('Optimisation prête 🤖');
     }
     function boostTips() {
+      const geoStr = document.getElementById('pf-geo').value || '';
+      const firstGeo = geoStr.split(',').map(s=>s.trim()).filter(Boolean)[0] || 'votre région';
       const items = [
-        'Publie mardi 09:00 GMT‑4',
+        'Publie mardi 09:00 heure locale',
         'Pose une question fermée à la fin',
-        'Mentionne un leader local (Guadeloupe)',
+        `Mentionne un leader local (${firstGeo})`,
         'Utilise un carrousel 4 slides',
         'Accroche avec un chiffre fort'
       ];
@@ -609,7 +626,6 @@
     // Form submit
     document.getElementById('composer').addEventListener('submit', function(e){
       e.preventDefault();
-      // fake prediction updates
       const likes = 40 + Math.floor(Math.random()*120);
       const comments = 8 + Math.floor(Math.random()*40);
       const shares = 3 + Math.floor(Math.random()*20);
@@ -652,21 +668,15 @@
         document.getElementById('ai-schedule-toggle').checked = !!d.aiTiming;
         toggleAIScheduling();
         updateCharCount(); updatePreviewContent();
-        toast('Brouillon chargé ✅');
       } catch(e) {}
     }
 
-    function openHelp() {
-      toast('Astuce: clique un module pour afficher ses actions.');
-    }
-
-    // Profil — gestion locale (pas d’API LinkedIn)
+    // Profil local
     function initials(first, last){
       const a = (first||'').trim()[0]||'-';
       const b = (last||'').trim()[0]||'-';
       return (a + b).toUpperCase();
     }
-    function openProfile(){ showModule('profile'); }
     function saveProfile(){
       const p = {
         first: document.getElementById('pf-first').value.trim(),
@@ -674,7 +684,7 @@
         sector: document.getElementById('pf-sector').value.trim(),
         geo: document.getElementById('pf-geo').value.trim(),
         linkedin: document.getElementById('pf-linkedin').value.trim(),
-        logged: !!window.__logged
+        logged: !!window.__linkedInConnected
       };
       localStorage.setItem('cms_profile', JSON.stringify(p));
       applyProfile(p);
@@ -694,36 +704,94 @@
       }catch(e){}
     }
     function applyProfile(p){
-      // header
       document.getElementById('header-initials').textContent = initials(p.first, p.last);
-      document.getElementById('header-status').textContent = window.__logged ? 'Connecté' : 'Hors ligne';
-      // preview
+      document.getElementById('header-status').textContent = window.__linkedInConnected ? 'Connecté' : 'Hors ligne';
       const name = [p.first, p.last].filter(Boolean).join(' ') || 'Votre Nom';
       document.getElementById('preview-name').textContent = name + ' • Expert LinkedIn';
       const sg = [p.sector||'Secteur', p.geo||'Géos cibles 🌍'].join(' • ');
       document.getElementById('preview-sector-geo').textContent = sg;
       const link = document.getElementById('preview-linkedin');
       const linkHdr = document.getElementById('pf-link');
-      if(p.linkedin){
-        link.href = p.linkedin; linkHdr.href = p.linkedin; linkHdr.classList.remove('hidden');
-      }
-    }
-    function simulateLogin(){
-      window.__logged = true;
-      document.getElementById('btn-login').classList.add('hidden');
-      document.getElementById('btn-logout').classList.remove('hidden');
-      document.getElementById('header-status').textContent = 'Connecté';
-      toast('Connecté (démo) 🔄');
-    }
-    function simulateLogout(){
-      window.__logged = false;
-      document.getElementById('btn-login').classList.remove('hidden');
-      document.getElementById('btn-logout').classList.add('hidden');
-      document.getElementById('header-status').textContent = 'Hors ligne';
-      toast('Déconnecté (démo)');
+      if(p.linkedin){ link.href = p.linkedin; linkHdr.href = p.linkedin; linkHdr.classList.remove('hidden'); }
     }
 
-    // Networking propose based on profile geo (worldwide, not limited)
+    // LinkedIn — à brancher sur ton backend sécurisé
+    const API_BASE = 'https://api.tondomaine.com'; // ← remplace par ton backend
+
+    let __pollTimer = null;
+    function connectLinkedIn(){
+      // Ouvre l’authentification OAuth sur ton domaine en nouvel onglet (sécurisé)
+      window.open(API_BASE + '/auth/linkedin/login', '_blank');
+      toast('Fenêtre de connexion ouverte…');
+    }
+    async function checkLinkedInSession(silent){
+      try{
+        const res = await fetch(API_BASE + '/api/linkedin/me', { credentials: 'include' });
+        if(!res.ok) throw new Error('not ok');
+        const me = await res.json();
+        window.__linkedInConnected = true;
+        document.getElementById('btn-login-linkedin').classList.add('hidden');
+        document.getElementById('btn-logout').classList.remove('hidden');
+        document.getElementById('header-status').textContent = 'Connecté';
+        // Remplit les champs si vides
+        if(!document.getElementById('pf-first').value && me.localizedFirstName){
+          document.getElementById('pf-first').value = me.localizedFirstName || '';
+          document.getElementById('pf-last').value = me.localizedLastName || '';
+          if(me.vanityName){
+            document.getElementById('pf-linkedin').value = 'https://www.linkedin.com/in/' + me.vanityName;
+          }
+          saveProfile();
+        } else {
+          const p = JSON.parse(localStorage.getItem('cms_profile')||'{}');
+          applyProfile(p);
+        }
+        if(!silent) toast('Session LinkedIn détectée ✅');
+        startPolling();
+      }catch(e){
+        window.__linkedInConnected = false;
+        document.getElementById('btn-login-linkedin').classList.remove('hidden');
+        document.getElementById('btn-logout').classList.add('hidden');
+        document.getElementById('header-status').textContent = 'Hors ligne';
+        if(!silent) toast('Non connecté à LinkedIn');
+        stopPolling();
+      }
+    }
+    function logoutLinkedIn(){
+      stopPolling();
+      window.open(API_BASE + '/auth/logout', '_blank');
+      window.__linkedInConnected = false;
+      document.getElementById('btn-login-linkedin').classList.remove('hidden');
+      document.getElementById('btn-logout').classList.add('hidden');
+      document.getElementById('header-status').textContent = 'Hors ligne';
+      toast('Déconnexion demandée');
+    }
+    function startPolling(){
+      stopPolling();
+      const sel = document.getElementById('lk-refresh');
+      const interval = sel ? parseInt(sel.value, 10) : 60000;
+      __pollTimer = setInterval(()=>refreshNow(true), interval);
+    }
+    function stopPolling(){ if(__pollTimer){ clearInterval(__pollTimer); __pollTimer = null; } }
+    async function refreshNow(showToast=true){
+      if(!window.__linkedInConnected) return;
+      try{
+        const res = await fetch(API_BASE + '/api/linkedin/posts', { credentials: 'include' });
+        if(res.ok){
+          const data = await res.json();
+          // Mise à jour simple des compteurs d’aperçu (exemple agrégé)
+          const items = Array.isArray(data.items) ? data.items : [];
+          const totalLikes = items.reduce((a,p)=> a + (p.metrics?.likes||0), 0);
+          const totalComments = items.reduce((a,p)=> a + (p.metrics?.comments||0), 0);
+          const totalShares = items.reduce((a,p)=> a + (p.metrics?.shares||0), 0);
+          document.getElementById('predicted-likes').textContent = totalLikes || 47;
+          document.getElementById('predicted-comments').textContent = totalComments || 12;
+          document.getElementById('predicted-shares').textContent = totalShares || 8;
+          if(showToast) toast('Données LinkedIn rafraîchies 🔄');
+        }
+      }catch(e){}
+    }
+
+    // Networking — basé sur géos (global)
     function proposeConnections(){
       const geo = (document.getElementById('pf-geo').value||'Monde').split(',').map(s=>s.trim()).filter(Boolean);
       const base = ['CMO', 'Founder', 'Sales Lead', 'HRBP', 'Ops Manager', 'Consultant', 'Head of Growth'];
@@ -738,7 +806,7 @@
       toast('Connexions proposées 🌍');
     }
 
-    // Light live metrics shimmer
+    // Live metrics shimmer (cosmétique)
     setInterval(()=>{
       const bump = (v)=> (v>0?'+':'') + (v + (Math.random()*6 - 3)|0) + '%';
       document.getElementById('live-engagement').textContent = bump(127);
@@ -746,9 +814,14 @@
       document.getElementById('live-conv').textContent = bump(189);
     }, 3000);
 
+    // Init
     document.addEventListener('DOMContentLoaded', ()=>{
       updateCharCount(); updatePreviewContent(); loadDraft(); loadProfile();
+      const refreshSel = document.getElementById('lk-refresh');
+      if(refreshSel){ refreshSel.addEventListener('change', ()=>{ if(window.__linkedInConnected) startPolling(); }); }
+      // Essaie de détecter une session existante (après login en nouvel onglet)
+      setTimeout(()=>checkLinkedInSession(true), 600);
     });
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981b88d35241e855',t:'MTc1ODMxMDYxMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981ba266d639370c',t:'MTc1ODMxMTY2MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
