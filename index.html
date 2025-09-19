@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Master Suite - Version Complète</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #0077b5 0%, #00a0dc 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .module-card { transition: all 0.3s ease; cursor: pointer; }
+        .module-card:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
+        .module-card.active { ring: 3px; ring-color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .gradient-text { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .success-animation { animation: successPulse 0.6s ease-out; }
+        @keyframes successPulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fab fa-linkedin text-3xl"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">LinkedIn Master Suite</h1>
+                        <p class="text-sm opacity-90">Version Complète - 8 Modules Interconnectés 🚀</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- LinkedIn Connection Status -->
+                    <div id="linkedin-status" class="flex items-center space-x-2 px-3 py-1 bg-white/10 rounded-full">
+                        <div class="w-2 h-2 bg-red-400 rounded-full pulse-dot" id="connection-dot"></div>
+                        <span class="text-sm" id="connection-status">Non connecté</span>
+                        <button onclick="connectLinkedIn()" id="connect-btn" class="text-xs bg-white/20 px-2 py-1 rounded-full hover:bg-white/30 transition-colors">
+                            Connecter
+                        </button>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm opacity-90">ROI Généré</div>
+                        <div class="text-xl font-bold text-yellow-300">€12,847</div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                            <i class="fas fa-crown text-yellow-500"></i>
+                        </div>
+                        <span class="font-medium">Expert LinkedIn</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- LinkedIn Integration Modal -->
+    <div id="linkedin-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">🔗 Connecter LinkedIn</h3>
+                    <button onclick="closeLinkedInModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h4 class="font-semibold text-blue-900 mb-2">🚀 Fonctionnalités automatisées</h4>
+                        <ul class="text-sm text-blue-800 space-y-1">
+                            <li>✅ Publication automatique de posts</li>
+                            <li>✅ Analyse de performance en temps réel</li>
+                            <li>✅ Détection de prospects qualifiés</li>
+                            <li>✅ Messages personnalisés automatiques</li>
+                            <li>✅ Suivi des conversions et ROI</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <h4 class="font-semibold text-yellow-900 mb-2">⚠️ Informations importantes</h4>
+                        <p class="text-sm text-yellow-800">
+                            Cette démo simule l'intégration LinkedIn. Dans la version réelle, vous utiliseriez l'API LinkedIn officielle avec authentification OAuth 2.0.
+                        </p>
+                    </div>
+                    
+                    <form onsubmit="simulateLinkedInConnection(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">URL de votre profil LinkedIn</label>
+                            <input type="url" id="linkedin-url" placeholder="https://linkedin.com/in/votre-profil" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Votre secteur d'activité</label>
+                            <select id="business-sector" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>Consulting & Services</option>
+                                <option>Marketing Digital</option>
+                                <option>Formation & Coaching</option>
+                                <option>E-commerce</option>
+                                <option>Immobilier</option>
+                                <option>Finance & Assurance</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Objectif principal</label>
+                            <select id="main-goal" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option>Acquisition de clients</option>
+                                <option>Génération de leads</option>
+                                <option>Personal branding</option>
+                                <option>Networking professionnel</option>
+                                <option>Recrutement</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="terms-checkbox" class="mr-2" required>
+                            <label for="terms-checkbox" class="text-sm text-gray-600">
+                                J'accepte les conditions d'utilisation et la politique de confidentialité
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all">
+                            <i class="fab fa-linkedin mr-2"></i>
+                            Connecter mon profil LinkedIn
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-6 py-8">
+        <!-- Module Navigation - 8 Modules -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <!-- Module 1: CORE -->
+            <div class="module-card bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-xl p-4 active" onclick="showModule('core')">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-layer-group text-2xl"></i>
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">CORE</span>
+                </div>
+                <h3 class="font-bold text-lg">Buffer Pro</h3>
+                <p class="text-sm opacity-90">Composition • Planning • Analytics</p>
+                <div class="flex items-center mt-3 text-xs">
+                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 pulse-dot"></div>
+                    <span>Clés partagées actives</span>
+                </div>
+            </div>
+
+            <!-- Module 2: NETWORKING -->
+            <div class="module-card bg-gradient-to-br from-green-600 to-green-700 text-white rounded-xl p-4" onclick="showModule('networking')">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-network-wired text-2xl"></i>
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">NET</span>
+                </div>
+                <h3 class="font-bold text-lg">Smart Network</h3>
+                <p class="text-sm opacity-90">Contacts • Géo-ciblage • Approche</p>
+                <div class="flex items-center mt-3 text-xs">
+                    <div class="w-2 h-2 bg-yellow-400 rounded-full mr-2"></div>
+                    <span>Avantage Guadeloupe</span>
+                </div>
+            </div>
+
+            <!-- Module 3: IA OPTIMIZER -->
+            <div class="module-card bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-xl p-4" onclick="showModule('optimizer')">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-robot text-2xl"></i>
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">AI</span>
+                </div>
+                <h3 class="font-bold text-lg">IA Optimizer</h3>
+                <p class="text-sm opacity-90">Temps réel • Prédictions • Auto</p>
+                <div class="flex items-center mt-3 text-xs">
+                    <div class="w-2 h-2 bg-red-400 rounded-full mr-2 pulse-dot"></div>
+                    <span>Analyse en cours</span>
+                </div>
+            </div>
+
+            <!-- Module 4: GROWTH HACKER -->
+            <div class="module-card bg-gradient-to-br from-orange-600 to-red-600 text-white rounded-xl p-4" onclick="showModule('growth')">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-rocket text-2xl"></i>
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">HACK</span>
+                </div>
+                <h3 class="font-bold text-lg">Growth Hacker</h3>
+                <p class="text-sm opacity-90">Viral • Trends • Intelligence</p>
+                <div class="flex items-center mt-3 text-xs">
+                    <div class="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+                    <span>ROI tracking actif</span>
+                </div>
+            </div>
+
+            <!-- Module 5: LEAD MAGNET FACTORY -->
+            <div class="module-card bg-gradient-to-br from-pink-600 to-rose-600 text-white rounded-xl p-4" onclick="showModule('leadmagnet')">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-magnet text-2xl"></i>
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">LEAD</span>
+                </div>
+                <h3 class="font-bold text-lg">Lead Magnet Factory</h3>
+                <p class="text-sm opacity-90">Capture • Convert • Nurture</p>
+                <div class="flex items-center mt-3 text-xs">
+                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 pulse-dot"></div>
+                    <span>127 leads ce mois</span>
+                </div>
+            </div>
+
+            <!-- Module 6: SALES ACCELERATOR -->
+            <div class="module-card bg-gradient-to-br from-emerald-600 to-teal-600 text-white rounded-xl p-4" onclick="showModule('sales')">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-chart-line text-2xl"></i>
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">SALES</span>
+                </div>
+                <h3 class="font-bold text-lg">Sales Accelerator</h3>
+                <p class="text-sm opacity-90">Pipeline • Scripts • Closing</p>
+                <div class="flex items-center mt-3 text-xs">
+                    <div class="w-2 h-2 bg-yellow-400 rounded-full mr-2"></div>
+                    <span>€2,340 ce mois</span>
+                </div>
+            </div>
+
+            <!-- Module 7: AUTHORITY BUILDER -->
+            <div class="module-card bg-gradient-to-br from-indigo-600 to-blue-600 text-white rounded-xl p-4" onclick="showModule('authority')">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-crown text-2xl"></i>
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">AUTH</span>
+                </div>
+                <h3 class="font-bold text-lg">Authority Builder</h3>
+                <p class="text-sm opacity-90">Thought Leader • Influence • Brand</p>
+                <div class="flex items-center mt-3 text-xs">
+                    <div class="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
+                    <span>Score influence: 9.2/10</span>
+                </div>
+            </div>
+
+            <!-- Module 8: CONVERSION TRACKER -->
+            <div class="module-card bg-gradient-to-br from-yellow-600 to-orange-600 text-white rounded-xl p-4" onclick="showModule('conversion')">
+                <div class="flex items-center justify-between mb-2">
+                    <i class="fas fa-bullseye text-2xl"></i>
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded-full">CONV</span>
+                </div>
+                <h3 class="font-bold text-lg">Conversion Tracker</h3>
+                <p class="text-sm opacity-90">Attribution • ROI • Prédictions</p>
+                <div class="flex items-center mt-3 text-xs">
+                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 pulse-dot"></div>
+                    <span>Taux: 34.7%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Master Dashboard -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-semibold gradient-text">🚀 Master Dashboard - Performance Globale</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-600">€12,847</div>
+                        <div class="text-xs text-gray-600">Revenus générés</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600">487%</div>
+                        <div class="text-xs text-gray-600">ROI LinkedIn</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-600">23</div>
+                        <div class="text-xs text-gray-600">Clients acquis</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interconnection Status -->
+            <div class="grid grid-cols-4 gap-4">
+                <div class="p-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg">
+                    <h4 class="font-semibold mb-2">🔗 Modules Interconnectés</h4>
+                    <div class="text-sm space-y-1">
+                        <div>✅ CORE ↔ AI ↔ GROWTH</div>
+                        <div>✅ NET ↔ LEAD ↔ SALES</div>
+                        <div>✅ AUTH ↔ CONV ↔ ALL</div>
+                    </div>
+                </div>
+                
+                <div class="p-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg">
+                    <h4 class="font-semibold mb-2">⚡ Performance Temps Réel</h4>
+                    <div class="text-sm space-y-1">
+                        <div>📊 Engagement: +127%</div>
+                        <div>🎯 Leads: +234%</div>
+                        <div>💰 Conversions: +189%</div>
+                    </div>
+                </div>
+                
+                <div class="p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg">
+                    <h4 class="font-semibold mb-2">🤖 IA Prédictive</h4>
+                    <div class="text-sm space-y-1">
+                        <div>🔮 Prochains clients: 3</div>
+                        <div>📈 Revenus 30j: €4,200</div>
+                        <div>⭐ Score viral: 9.1/10</div>
+                    </div>
+                </div>
+                
+                <div class="p-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg">
+                    <h4 class="font-semibold mb-2">🎯 Objectifs Semaine</h4>
+                    <div class="text-sm space-y-1">
+                        <div>✅ 2 nouveaux clients</div>
+                        <div>🔄 50 connexions qualifiées</div>
+                        <div>📱 Viral post (10K+ vues)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE CORE -->
+        <div id="core-module" class="module-content">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Post Composer Enhanced -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h2 class="text-xl font-semibold mb-6 flex items-center">
+                        <i class="fas fa-pen-fancy text-blue-600 mr-3"></i>
+                        Créateur de Contenu IA
+                    </h2>
+                    
+                    <!-- AI Content Generator -->
+                    <div class="mb-6 p-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-semibold flex items-center">
+                                <i class="fas fa-robot mr-2"></i>
+                                Générateur IA - Client Magnet
+                            </h4>
+                            <button onclick="generateClientMagnetContent()" class="px-3 py-1 bg-white/20 rounded-full text-sm hover:bg-white/30 transition-colors">
+                                <i class="fas fa-magic mr-1"></i>Générer
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 text-sm">
+                            <div>
+                                <span class="opacity-90">Probabilité client:</span>
+                                <span class="font-bold text-yellow-300" id="client-probability">87%</span>
+                            </div>
+                            <div>
+                                <span class="opacity-90">Engagement prévu:</span>
+                                <span class="font-bold text-green-300" id="engagement-prediction">9.2%</span>
+                            </div>
+                            <div>
+                                <span class="opacity-90">Leads estimés:</span>
+                                <span class="font-bold text-blue-300" id="leads-estimation">12-18</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form id="post-form" onsubmit="createPost(event)">
+                        <!-- Content Type Selection -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Type de contenu client-magnet</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <button type="button" onclick="setContentType('authority')" id="type-authority" class="p-3 border-2 border-purple-600 bg-purple-50 text-purple-700 rounded-lg font-medium transition-all text-sm">
+                                    <i class="fas fa-crown mr-1"></i>Authority
+                                </button>
+                                <button type="button" onclick="setContentType('problem')" id="type-problem" class="p-3 border-2 border-gray-200 text-gray-600 rounded-lg font-medium transition-all hover:border-purple-300 text-sm">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>Problem
+                                </button>
+                                <button type="button" onclick="setContentType('solution')" id="type-solution" class="p-3 border-2 border-gray-200 text-gray-600 rounded-lg font-medium transition-all hover:border-purple-300 text-sm">
+                                    <i class="fas fa-lightbulb mr-1"></i>Solution
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Content Input Enhanced -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Contenu optimisé conversion</label>
+                            <textarea id="post-content" rows="6" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none" placeholder="Partagez votre expertise pour attirer vos clients idéaux..." oninput="updateCharCount()"></textarea>
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-sm text-gray-500">
+                                    <span id="char-count">0</span>/3000 caractères
+                                </span>
+                                <div class="flex space-x-2">
+                                    <button type="button" onclick="addClientMagnetHashtags()" class="text-sm text-purple-600 hover:text-purple-700 font-medium">
+                                        <i class="fas fa-hashtag mr-1"></i>Hashtags Client
+                                    </button>
+                                    <button type="button" onclick="addCallToAction()" class="text-sm text-green-600 hover:text-green-700 font-medium">
+                                        <i class="fas fa-bullhorn mr-1"></i>Call-to-Action
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lead Magnet Integration -->
+                        <div class="mb-6 p-4 bg-pink-50 rounded-lg border border-pink-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-semibold text-pink-900">🧲 Lead Magnet Intégré</h4>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="include-lead-magnet" class="mr-2" onchange="toggleLeadMagnet()">
+                                    <span class="text-sm text-pink-700">Inclure lead magnet</span>
+                                </label>
+                            </div>
+                            <div id="lead-magnet-options" class="hidden">
+                                <select id="lead-magnet-select" class="w-full p-3 border border-pink-300 rounded-lg focus:ring-2 focus:ring-pink-500 mb-3" onchange="updateLeadMagnetPreview()">
+                                    <option>📋 Checklist "10 Erreurs LinkedIn à Éviter"</option>
+                                    <option>📊 Template "Post Viral en 5 Minutes"</option>
+                                    <option>🎯 Guide "Trouver 10 Clients en 30 Jours"</option>
+                                    <option>💰 Calculateur "ROI LinkedIn"</option>
+                                </select>
+                                <p class="text-sm text-pink-700">Taux de conversion moyen: <span class="font-bold">34.7%</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Smart Scheduling -->
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <label class="block text-sm font-medium text-gray-700">Planification IA Optimisée</label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="ai-schedule-toggle" class="mr-2" onchange="toggleAIScheduling()">
+                                    <span class="text-sm text-gray-600">IA choisit le timing optimal</span>
+                                </label>
+                            </div>
+                            <div id="ai-schedule-info" class="hidden p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-medium text-blue-900">Timing optimal détecté</p>
+                                        <p class="text-sm text-blue-700">Demain 14h30 (GMT-4) • +127% engagement prévu</p>
+                                    </div>
+                                    <i class="fas fa-brain text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions Enhanced -->
+                        <div class="flex space-x-3">
+                            <button type="submit" class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition-all">
+                                <i class="fas fa-rocket mr-2"></i>
+                                <span id="submit-text">Publier & Capturer Leads</span>
+                            </button>
+                            <button type="button" onclick="saveDraft()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-save mr-2"></i>Brouillon
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Enhanced Preview -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-eye text-purple-600 mr-3"></i>
+                        Aperçu Client-Magnet
+                    </h3>
+                    
+                    <!-- Conversion Prediction -->
+                    <div class="mb-4 p-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-semibold">Prédiction IA</p>
+                                <p class="text-sm opacity-90">Ce post va générer <span class="font-bold" id="predicted-leads">12-18 leads</span></p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xl font-bold" id="conversion-score">8.7/10</div>
+                                <div class="text-xs opacity-90">Score conversion</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 border-l-4 border-blue-500 rounded-lg p-4">
+                        <div class="flex items-start space-x-3 mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-crown text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Votre Nom • Expert LinkedIn</h4>
+                                <p class="text-sm text-gray-600">Spécialiste Acquisition Clients • Guadeloupe 🌴</p>
+                                <p class="text-xs text-gray-500">Maintenant • 🌍</p>
+                            </div>
+                        </div>
+                        <div id="preview-content" class="text-gray-800 mb-4">
+                            Votre contenu client-magnet apparaîtra ici...
+                        </div>
+                        <div id="preview-lead-magnet" class="mb-4 hidden">
+                            <div class="p-3 bg-gradient-to-r from-pink-100 to-purple-100 rounded-lg border border-pink-300">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-gift text-pink-600 text-xl"></i>
+                                    <div>
+                                        <p class="font-semibold text-pink-900">🎁 Ressource Gratuite</p>
+                                        <p class="text-sm text-pink-700" id="preview-lead-magnet-text">Checklist "10 Erreurs LinkedIn à Éviter"</p>
+                                    </div>
+                                    <button class="px-4 py-2 bg-pink-600 text-white rounded-lg text-sm font-medium">
+                                        Télécharger
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t border-gray-200">
+                            <div class="flex space-x-6 text-sm text-gray-600">
+                                <span><i class="far fa-thumbs-up mr-1"></i><span id="predicted-likes">47</span> J'aime</span>
+                                <span><i class="far fa-comment mr-1"></i><span id="predicted-comments">12</span> Commentaires</span>
+                                <span><i class="fas fa-share mr-1"></i><span id="predicted-shares">8</span> Partages</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE NETWORKING -->
+        <div id="networking-module" class="module-content hidden">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h3 class="text-lg font-semibold mb-6 flex items-center">
+                        <i class="fas fa-users text-green-600 mr-3"></i>
+                        Smart Networking Guadeloupe
+                    </h3>
+                    
+                    <div class="mb-6 p-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg">
+                        <h4 class="font-semibold mb-3">🌴 Avantage Géographique</h4>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div>Décalage GMT-4: <span class="font-bold">Optimal</span></div>
+                            <div>Réseau Caraïbes: <span class="font-bold">Unique</span></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <button onclick="findLocalProspects()" class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                            <i class="fas fa-map-marker-alt mr-2"></i>Prospects DOM-TOM
+                        </button>
+                        <button onclick="findFranceProspects()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-globe-europe mr-2"></i>Prospects France
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h3 class="text-lg font-semibold mb-6">Connexions Recommandées</h3>
+                    <div id="recommended-connections" class="space-y-3">
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h5 class="font-semibold">Marie Dubois</h5>
+                                    <p class="text-sm text-gray-600">CEO • Martinique</p>
+                                </div>
+                                <button onclick="sendConnection('Marie Dubois')" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm">
+                                    Connecter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE IA OPTIMIZER -->
+        <div id="optimizer-module" class="module-content hidden">
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-lg font-semibold mb-6 flex items-center">
+                    <i class="fas fa-brain text-purple-600 mr-3"></i>
+                    IA Optimizer - Temps Réel
+                </h3>
+                
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <div class="p-4 bg-purple-50 rounded-lg">
+                        <h4 class="font-semibold text-purple-900 mb-3">🤖 Analyse IA</h4>
+                        <div class="space-y-2 text-sm">
+                            <div>Meilleur timing: <span class="font-bold">14h30 GMT-4</span></div>
+                            <div>Hashtags optimaux: <span class="font-bold">7 détectés</span></div>
+                            <div>Score viral prévu: <span class="font-bold">9.1/10</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <h4 class="font-semibold text-blue-900 mb-3">📊 Prédictions</h4>
+                        <div class="space-y-2 text-sm">
+                            <div>Engagement: <span class="font-bold text-green-600">+127%</span></div>
+                            <div>Portée: <span class="font-bold text-blue-600">15.2K</span></div>
+                            <div>Leads: <span class="font-bold text-purple-600">18-24</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-green-50 rounded-lg">
+                        <h4 class="font-semibold text-green-900 mb-3">⚡ Actions Auto</h4>
+                        <div class="space-y-2 text-sm">
+                            <div>✅ Timing optimisé</div>
+                            <div>✅ Hashtags ajustés</div>
+                            <div>✅ CTA personnalisé</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE GROWTH HACKER -->
+        <div id="growth-module" class="module-content hidden">
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-lg font-semibold mb-6 flex items-center">
+                    <i class="fas fa-rocket text-orange-600 mr-3"></i>
+                    Growth Hacker - Viral Engine
+                </h3>
+                
+                <div class="grid lg:grid-cols-2 gap-6">
+                    <div class="p-4 bg-orange-50 rounded-lg">
+                        <h4 class="font-semibold text-orange-900 mb-3">🚀 Stratégies Virales</h4>
+                        <div class="space-y-3">
+                            <button onclick="createViralContent()" class="w-full bg-orange-600 text-white py-2 rounded-lg">
+                                Contenu Viral IA
+                            </button>
+                            <button onclick="trendAnalysis()" class="w-full bg-red-600 text-white py-2 rounded-lg">
+                                Analyse Tendances
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-red-50 rounded-lg">
+                        <h4 class="font-semibold text-red-900 mb-3">📈 Métriques Growth</h4>
+                        <div class="space-y-2 text-sm">
+                            <div>Croissance followers: <span class="font-bold text-green-600">+234%</span></div>
+                            <div>Taux viral: <span class="font-bold text-orange-600">12.4%</span></div>
+                            <div>ROI campagnes: <span class="font-bold text-red-600">487%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE LEAD MAGNET FACTORY -->
+        <div id="leadmagnet-module" class="module-content hidden">
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-lg font-semibold mb-6 flex items-center">
+                    <i class="fas fa-magnet text-pink-600 mr-3"></i>
+                    Lead Magnet Factory
+                </h3>
+                
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <div class="p-4 bg-pink-50 rounded-lg">
+                        <h4 class="font-semibold text-pink-900 mb-3">🧲 Créateur Magnets</h4>
+                        <div class="space-y-3">
+                            <button onclick="createChecklist()" class="w-full bg-pink-600 text-white py-2 rounded-lg text-sm">
+                                📋 Checklist Interactive
+                            </button>
+                            <button onclick="createTemplate()" class="w-full bg-purple-600 text-white py-2 rounded-lg text-sm">
+                                📄 Template Prêt
+                            </button>
+                            <button onclick="createCalculator()" class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm">
+                                🧮 Calculateur ROI
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <h4 class="font-semibold text-blue-900 mb-3">📊 Performance</h4>
+                        <div class="space-y-2 text-sm">
+                            <div>Taux conversion: <span class="font-bold text-green-600">34.7%</span></div>
+                            <div>Leads ce mois: <span class="font-bold text-blue-600">127</span></div>
+                            <div>Magnets actifs: <span class="font-bold text-purple-600">8</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-green-50 rounded-lg">
+                        <h4 class="font-semibold text-green-900 mb-3">🎯 Top Performers</h4>
+                        <div class="space-y-2 text-sm">
+                            <div>Checklist LinkedIn: <span class="font-bold">42%</span></div>
+                            <div>Template Posts: <span class="font-bold">38%</span></div>
+                            <div>Guide Clients: <span class="font-bold">35%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE SALES ACCELERATOR -->
+        <div id="sales-module" class="module-content hidden">
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-lg font-semibold mb-6 flex items-center">
+                    <i class="fas fa-chart-line text-emerald-600 mr-3"></i>
+                    Sales Accelerator
+                </h3>
+                
+                <div class="grid lg:grid-cols-2 gap-6">
+                    <div class="p-4 bg-emerald-50 rounded-lg">
+                        <h4 class="font-semibold text-emerald-900 mb-3">💰 Pipeline</h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span>Prospects qualifiés:</span>
+                                <span class="font-bold">23</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>En négociation:</span>
+                                <span class="font-bold">7</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Revenus prévus:</span>
+                                <span class="font-bold text-green-600">€8,400</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-teal-50 rounded-lg">
+                        <h4 class="font-semibold text-teal-900 mb-3">🎯 Actions</h4>
+                        <div class="space-y-2">
+                            <button onclick="updatePipeline()" class="w-full bg-emerald-600 text-white py-2 rounded-lg text-sm">
+                                Mettre à jour Pipeline
+                            </button>
+                            <button onclick="generateScript()" class="w-full bg-teal-600 text-white py-2 rounded-lg text-sm">
+                                Script de Vente IA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE AUTHORITY BUILDER -->
+        <div id="authority-module" class="module-content hidden">
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-lg font-semibold mb-6 flex items-center">
+                    <i class="fas fa-crown text-indigo-600 mr-3"></i>
+                    Authority Builder
+                </h3>
+                
+                <div class="grid lg:grid-cols-2 gap-6">
+                    <div class="p-4 bg-indigo-50 rounded-lg">
+                        <h4 class="font-semibold text-indigo-900 mb-3">👑 Score d'Autorité</h4>
+                        <div class="text-center mb-4">
+                            <div class="text-4xl font-bold text-indigo-600">9.2/10</div>
+                            <div class="text-sm text-indigo-700">Expert Reconnu</div>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <div>Influence: <span class="font-bold text-green-600">Top 1%</span></div>
+                            <div>Crédibilité: <span class="font-bold text-blue-600">94.7%</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-purple-50 rounded-lg">
+                        <h4 class="font-semibold text-purple-900 mb-3">🚀 Stratégies</h4>
+                        <div class="space-y-2">
+                            <button onclick="createThoughtLeadership()" class="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm">
+                                Thought Leadership
+                            </button>
+                            <button onclick="generateControversy()" class="w-full bg-purple-600 text-white py-2 rounded-lg text-sm">
+                                Controverse Contrôlée
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE CONVERSION TRACKER -->
+        <div id="conversion-module" class="module-content hidden">
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="text-lg font-semibold mb-6 flex items-center">
+                    <i class="fas fa-bullseye text-yellow-600 mr-3"></i>
+                    Conversion Tracker
+                </h3>
+                
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <div class="p-4 bg-yellow-50 rounded-lg">
+                        <h4 class="font-semibold text-yellow-900 mb-3">💰 Attribution</h4>
+                        <div class="space-y-2 text-sm">
+                            <div>Revenus attribués: <span class="font-bold text-green-600">€12,847</span></div>
+                            <div>ROI LinkedIn: <span class="font-bold text-blue-600">487%</span></div>
+                            <div>Clients acquis: <span class="font-bold text-purple-600">23</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-orange-50 rounded-lg">
+                        <h4 class="font-semibold text-orange-900 mb-3">🔮 Prédictions</h4>
+                        <div class="space-y-2 text-sm">
+                            <div>Revenus 30j: <span class="font-bold text-green-600">€8,400</span></div>
+                            <div>Nouveaux clients: <span class="font-bold text-blue-600">12</span></div>
+                            <div>Confiance: <span class="font-bold text-purple-600">91%</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-red-50 rounded-lg">
+                        <h4 class="font-semibold text-red-900 mb-3">🔥 Prospects Chauds</h4>
+                        <div class="space-y-2 text-sm">
+                            <div>Ultra-chauds: <span class="font-bold text-red-600">3 (97%)</span></div>
+                            <div>Chauds: <span class="font-bold text-orange-600">8 (73%)</span></div>
+                            <div>Tièdes: <span class="font-bold text-yellow-600">15 (45%)</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentContentType = 'authority';
+
+        // Module management
+        function showModule(moduleName) {
+            // Hide all modules
+            document.querySelectorAll('.module-content').forEach(module => {
+                module.classList.add('hidden');
+            });
+            
+            // Show selected module
+            const targetModule = document.getElementById(moduleName + '-module');
+            if (targetModule) {
+                targetModule.classList.remove('hidden');
+            }
+            
+            // Update module cards visual state
+            document.querySelectorAll('.module-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Find and highlight the clicked card
+            const clickedCard = event.target.closest('.module-card');
+            if (clickedCard) {
+                clickedCard.classList.add('active');
+            }
+        }
+
+        // Content type management
+        function setContentType(type) {
+            currentContentType = type;
+            
+            // Update buttons
+            document.querySelectorAll('[id^="type-"]').forEach(btn => {
+                btn.classList.remove('border-purple-600', 'bg-purple-50', 'text-purple-700');
+                btn.classList.add('border-gray-200', 'text-gray-600');
+            });
+            
+            const activeBtn = document.getElementById('type-' + type);
+            if (activeBtn) {
+                activeBtn.classList.add('border-purple-600', 'bg-purple-50', 'text-purple-700');
+                activeBtn.classList.remove('border-gray-200', 'text-gray-600');
+            }
+            
+            updatePredictions();
+        }
+
+        // Update predictions
+        function updatePredictions() {
+            const predictions = {
+                authority: { probability: '87%', engagement: '9.2%', leads: '12-18', likes: '47', comments: '12', shares: '8', score: '8.7' },
+                problem: { probability: '76%', engagement: '7.8%', leads: '8-14', likes: '34', comments: '8', shares: '5', score: '7.4' },
+                solution: { probability: '82%', engagement: '8.5%', leads: '10-16', likes: '41', comments: '10', shares: '7', score: '8.1' }
+            };
+            
+            const pred = predictions[currentContentType] || predictions.authority;
+            
+            // Update UI elements safely
+            const updateElement = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            };
+            
+            updateElement('client-probability', pred.probability);
+            updateElement('engagement-prediction', pred.engagement);
+            updateElement('leads-estimation', pred.leads);
+            updateElement('predicted-leads', pred.leads);
+            updateElement('predicted-likes', pred.likes);
+            updateElement('predicted-comments', pred.comments);
+            updateElement('predicted-shares', pred.shares);
+            updateElement('conversion-score', pred.score);
+        }
+
+        // Character count and preview
+        function updateCharCount() {
+            const content = document.getElementById('post-content');
+            const charCount = document.getElementById('char-count');
+            if (content && charCount) {
+                charCount.textContent = content.value.length;
+                updatePreview();
+            }
+        }
+
+        function updatePreview() {
+            const content = document.getElementById('post-content');
+            const previewContent = document.getElementById('preview-content');
+            
+            if (content && previewContent) {
+                if (content.value.trim()) {
+                    previewContent.innerHTML = content.value.replace(/\n/g, '<br>');
+                } else {
+                    previewContent.textContent = 'Votre contenu client-magnet apparaîtra ici...';
+                }
+            }
+        }
+
+        // Lead magnet functions
+        function toggleLeadMagnet() {
+            const isChecked = document.getElementById('include-lead-magnet')?.checked;
+            const options = document.getElementById('lead-magnet-options');
+            const preview = document.getElementById('preview-lead-magnet');
+            
+            if (options && preview) {
+                if (isChecked) {
+                    options.classList.remove('hidden');
+                    preview.classList.remove('hidden');
+                    updateLeadMagnetPreview();
+                } else {
+                    options.classList.add('hidden');
+                    preview.classList.add('hidden');
+                }
+            }
+        }
+
+        function updateLeadMagnetPreview() {
+            const select = document.getElementById('lead-magnet-select');
+            const previewText = document.getElementById('preview-lead-magnet-text');
+            
+            if (select && previewText) {
+                previewText.textContent = select.value;
+            }
+        }
+
+        // AI Scheduling
+        function toggleAIScheduling() {
+            const isChecked = document.getElementById('ai-schedule-toggle')?.checked;
+            const info = document.getElementById('ai-schedule-info');
+            const submitText = document.getElementById('submit-text');
+            
+            if (info && submitText) {
+                if (isChecked) {
+                    info.classList.remove('hidden');
+                    submitText.textContent = 'Publier au Timing IA Optimal';
+                } else {
+                    info.classList.add('hidden');
+                    submitText.textContent = 'Publier & Capturer Leads';
+                }
+            }
+        }
+
+        // Content generation functions
+        function generateClientMagnetContent() {
+            const templates = [
+                "🚀 Comment j'ai généré €12,847 en 3 mois grâce à LinkedIn depuis la Guadeloupe\n\nBeaucoup pensent qu'être en DOM-TOM est un handicap pour le business...\n\nErreur ! C'est notre plus grand avantage :\n\n✅ Décalage horaire stratégique (GMT-4)\n✅ Perspective unique Caraïbes-France\n✅ Moins de concurrence directe\n✅ Positionnement différenciant\n\nMa méthode en 4 étapes :\n\n1️⃣ Exploiter l'avantage géographique\n2️⃣ Créer du contenu \"pont culturel\"\n3️⃣ Cibler intelligemment (France + DOM-TOM)\n4️⃣ Convertir avec l'authenticité antillaise\n\nRésultats :\n• 23 nouveaux clients\n• ROI de 487%\n• Taux de conversion 34.7%",
+                "💡 Pourquoi 90% des entrepreneurs échouent sur LinkedIn (et comment éviter leurs erreurs)\n\nAprès avoir analysé 500+ profils LinkedIn d'entrepreneurs...\n\nJ'ai découvert les 3 erreurs fatales :\n\n❌ Erreur #1 : Vendre dès le premier contact\n❌ Erreur #2 : Copier les stratégies US/Europe sans adaptation\n❌ Erreur #3 : Ignorer l'avantage géographique\n\n✅ Ma méthode \"Caraïbes-to-Client\" :\n\n• Étape 1 : Positionnement unique territorial\n• Étape 2 : Contenu \"pont interculturel\"\n• Étape 3 : Timing optimisé décalage horaire\n• Étape 4 : Conversion authentique antillaise"
+            ];
+            
+            const content = document.getElementById('post-content');
+            if (content) {
+                const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+                content.value = randomTemplate;
+                updateCharCount();
+                
+                // Show success animation
+                const button = event.target;
+                button.classList.add('success-animation');
+                setTimeout(() => button.classList.remove('success-animation'), 600);
+            }
+        }
+
+        function addClientMagnetHashtags() {
+            const content = document.getElementById('post-content');
+            if (content) {
+                const hashtags = '\n\n#LinkedIn #AcquisitionClients #ExpertiseGuadeloupe #BusinessCaraïbes #MarketingDigital #Consulting #France #DOMTOM';
+                content.value += hashtags;
+                updateCharCount();
+            }
+        }
+
+        function addCallToAction() {
+            const content = document.getElementById('post-content');
+            if (content) {
+                const cta = '\n\n💡 Vous voulez des résultats similaires ?\n📩 Envoyez-moi un message privé avec "LINKEDIN" et je vous partage ma stratégie complète.\n\n🎁 Bonus : Recevez gratuitement mon guide "10 Clients en 30 Jours via LinkedIn"';
+                content.value += cta;
+                updateCharCount();
+            }
+        }
+
+        // Form submission
+        function createPost(event) {
+            event.preventDefault();
+            
+            const content = document.getElementById('post-content').value;
+            if (!content.trim()) {
+                alert('Veuillez saisir du contenu pour votre post');
+                return;
+            }
+            
+            // Simulate post creation
+            const button = event.target.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Publication en cours...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>Post publié avec succès !';
+                button.classList.remove('from-purple-600', 'to-pink-600');
+                button.classList.add('from-green-600', 'to-emerald-600');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    button.classList.remove('from-green-600', 'to-emerald-600');
+                    button.classList.add('from-purple-600', 'to-pink-600');
+                }, 2000);
+            }, 1500);
+        }
+
+        function saveDraft() {
+            const content = document.getElementById('post-content').value;
+            if (!content.trim()) {
+                alert('Aucun contenu à sauvegarder');
+                return;
+            }
+            
+            // Simulate saving
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sauvegarde...';
+            
+            setTimeout(() => {
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>Sauvegardé !';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 1500);
+            }, 800);
+        }
+
+        // LinkedIn Integration Functions
+        function connectLinkedIn() {
+            document.getElementById('linkedin-modal').classList.remove('hidden');
+        }
+
+        function closeLinkedInModal() {
+            document.getElementById('linkedin-modal').classList.add('hidden');
+        }
+
+        function simulateLinkedInConnection(event) {
+            event.preventDefault();
+            
+            const linkedinUrl = document.getElementById('linkedin-url').value;
+            const businessSector = document.getElementById('business-sector').value;
+            const mainGoal = document.getElementById('main-goal').value;
+            
+            if (!linkedinUrl || !document.getElementById('terms-checkbox').checked) {
+                alert('Veuillez remplir tous les champs et accepter les conditions.');
+                return;
+            }
+            
+            // Simulate connection process
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Connexion en cours...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Update connection status
+                const connectionDot = document.getElementById('connection-dot');
+                const connectionStatus = document.getElementById('connection-status');
+                const connectBtn = document.getElementById('connect-btn');
+                
+                connectionDot.classList.remove('bg-red-400');
+                connectionDot.classList.add('bg-green-400');
+                connectionStatus.textContent = 'Connecté';
+                connectBtn.textContent = 'Synchroniser';
+                connectBtn.onclick = synchronizeLinkedIn;
+                
+                // Extract profile name from URL
+                const profileMatch = linkedinUrl.match(/linkedin\.com\/in\/([^\/]+)/);
+                const profileName = profileMatch ? profileMatch[1].replace(/-/g, ' ') : 'Votre Profil';
+                
+                // Update preview with real profile info
+                updateProfilePreview(profileName, businessSector, mainGoal);
+                
+                // Close modal
+                closeLinkedInModal();
+                
+                // Show success message
+                showSuccessMessage(`🎉 Profil LinkedIn connecté avec succès !\n\n✅ Synchronisation des données en cours...\n📊 Analyse de votre profil terminée\n🎯 Stratégie personnalisée générée\n\nSecteur: ${businessSector}\nObjectif: ${mainGoal}`);
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+            }, 2000);
+        }
+
+        function updateProfilePreview(profileName, sector, goal) {
+            // Update the preview section with real profile data
+            const previewContent = document.getElementById('preview-content');
+            if (previewContent && previewContent.textContent === 'Votre contenu client-magnet apparaîtra ici...') {
+                const capitalizedName = profileName.split(' ').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+                
+                // Update profile display in preview
+                const profileSection = document.querySelector('.bg-gray-50.border-l-4 h4');
+                if (profileSection) {
+                    profileSection.textContent = `${capitalizedName} • Expert ${sector}`;
+                }
+            }
+            
+            // Update dashboard with personalized data
+            updatePersonalizedDashboard(sector, goal);
+        }
+
+        function updatePersonalizedDashboard(sector, goal) {
+            // Customize predictions based on sector and goal
+            const sectorMultipliers = {
+                'Consulting & Services': { engagement: 1.2, leads: 1.3, conversion: 1.1 },
+                'Marketing Digital': { engagement: 1.4, leads: 1.2, conversion: 1.3 },
+                'Formation & Coaching': { engagement: 1.3, leads: 1.4, conversion: 1.2 },
+                'E-commerce': { engagement: 1.1, leads: 1.1, conversion: 1.4 },
+                'Immobilier': { engagement: 1.0, leads: 1.2, conversion: 1.3 },
+                'Finance & Assurance': { engagement: 0.9, leads: 1.1, conversion: 1.2 }
+            };
+            
+            const multiplier = sectorMultipliers[sector] || { engagement: 1.0, leads: 1.0, conversion: 1.0 };
+            
+            // Update predictions with personalized data
+            const baseEngagement = 9.2;
+            const baseLeads = 15;
+            const baseConversion = 34.7;
+            
+            const personalizedEngagement = (baseEngagement * multiplier.engagement).toFixed(1);
+            const personalizedLeads = Math.round(baseLeads * multiplier.leads);
+            const personalizedConversion = (baseConversion * multiplier.conversion).toFixed(1);
+            
+            // Update UI elements
+            const updateElement = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            };
+            
+            updateElement('engagement-prediction', personalizedEngagement + '%');
+            updateElement('leads-estimation', `${personalizedLeads-3}-${personalizedLeads+3}`);
+            updateElement('predicted-leads', `${personalizedLeads-3}-${personalizedLeads+3}`);
+        }
+
+        function synchronizeLinkedIn() {
+            const button = event.target;
+            const originalText = button.textContent;
+            
+            button.innerHTML = '<i class="fas fa-sync fa-spin mr-1"></i>Sync...';
+            
+            setTimeout(() => {
+                showSuccessMessage('🔄 Synchronisation terminée !\n\n✅ 23 nouveaux contacts analysés\n📊 3 prospects chauds détectés\n🎯 2 opportunités immédiates\n💡 Stratégie mise à jour');
+                button.textContent = originalText;
+            }, 1500);
+        }
+
+        function showSuccessMessage(message) {
+            // Create and show a success modal
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 p-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-check text-green-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Connexion Réussie !</h3>
+                        <p class="text-gray-600 whitespace-pre-line mb-6">${message}</p>
+                        <button onclick="this.closest('.fixed').remove()" class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg font-medium hover:from-green-700 hover:to-emerald-700 transition-all">
+                            Parfait !
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (modal.parentNode) {
+                    modal.remove();
+                }
+            }, 5000);
+        }
+
+        // Other module functions (simplified for demo)
+        function findLocalProspects() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Veuillez d\'abord connecter votre profil LinkedIn pour accéder à cette fonctionnalité.');
+                connectLinkedIn();
+                return;
+            }
+            alert('🌴 Recherche de prospects DOM-TOM en cours...\n\n✅ 47 prospects qualifiés trouvés en Guadeloupe, Martinique et Guyane !\n\n🎯 Analyse basée sur votre profil LinkedIn connecté');
+        }
+
+        function findFranceProspects() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Veuillez d\'abord connecter votre profil LinkedIn pour accéder à cette fonctionnalité.');
+                connectLinkedIn();
+                return;
+            }
+            alert('🇫🇷 Recherche de prospects France en cours...\n\n✅ 234 prospects qualifiés trouvés avec connexions DOM-TOM !\n\n🎯 Analyse basée sur votre réseau LinkedIn');
+        }
+
+        function sendConnection(name) {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Veuillez d\'abord connecter votre profil LinkedIn pour envoyer des invitations.');
+                connectLinkedIn();
+                return;
+            }
+            alert(`✅ Demande de connexion envoyée à ${name} avec un message personnalisé basé sur votre profil !`);
+        }
+
+        function createViralContent() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Connectez votre profil LinkedIn pour générer du contenu personnalisé.');
+                connectLinkedIn();
+                return;
+            }
+            alert('🚀 Contenu viral généré basé sur votre profil !\n\n"Opinion impopulaire : LinkedIn n\'est PAS fait pour vendre"\n\nPotentiel viral : 94% • Engagement prévu : +340%\n\n📊 Optimisé pour votre secteur d\'activité');
+        }
+
+        function trendAnalysis() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Connectez votre profil LinkedIn pour une analyse personnalisée des tendances.');
+                connectLinkedIn();
+                return;
+            }
+            alert('📈 Analyse des tendances terminée !\n\n🔥 Trending dans votre secteur : #IA #RemoteWork #Entrepreneuriat\n📊 Opportunité détectée : Contenu IA + Caraïbes\n🎯 Recommandations personnalisées générées');
+        }
+
+        function createChecklist() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Connectez votre profil LinkedIn pour créer des lead magnets personnalisés.');
+                connectLinkedIn();
+                return;
+            }
+            alert('📋 Checklist créée et personnalisée !\n\n"10 Erreurs LinkedIn à Éviter en 2024 - Spécial Votre Secteur"\n\nTaux de conversion prévu : 42.3%\n🎯 Adaptée à votre audience LinkedIn');
+        }
+
+        function createTemplate() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Connectez votre profil LinkedIn pour des templates personnalisés.');
+                connectLinkedIn();
+                return;
+            }
+            alert('📄 Template créé et personnalisé !\n\n"Post Viral en 5 Minutes - Framework IMPACT pour Votre Secteur"\n\nTaux de conversion prévu : 38.7%\n🎯 Optimisé pour votre audience');
+        }
+
+        function createCalculator() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Connectez votre profil LinkedIn pour des calculateurs personnalisés.');
+                connectLinkedIn();
+                return;
+            }
+            alert('🧮 Calculateur créé et personnalisé !\n\n"ROI LinkedIn Calculator - Édition Votre Secteur"\n\nTaux de conversion prévu : 45.1%\n🎯 Adapté à vos métriques LinkedIn');
+        }
+
+        function updatePipeline() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Connectez votre profil LinkedIn pour synchroniser votre pipeline.');
+                connectLinkedIn();
+                return;
+            }
+            alert('💰 Pipeline mis à jour avec vos données LinkedIn !\n\n✅ 3 nouveaux prospects qualifiés détectés\n📈 Valeur pipeline : +€4,200\n🎯 Probabilité closing : 67%\n📊 Basé sur votre activité LinkedIn');
+        }
+
+        function generateScript() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Connectez votre profil LinkedIn pour des scripts personnalisés.');
+                connectLinkedIn();
+                return;
+            }
+            alert('🎯 Script de vente généré et personnalisé !\n\n"Approche Découverte - Spécial Votre Secteur"\n\nTaux de réussite prévu : 73%\n📊 Adapté à votre style LinkedIn');
+        }
+
+        function createThoughtLeadership() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Connectez votre profil LinkedIn pour du contenu d\'autorité personnalisé.');
+                connectLinkedIn();
+                return;
+            }
+            alert('👑 Contenu Thought Leadership créé !\n\n"L\'avenir du business dans votre secteur"\n\nScore autorité : +0.3 points\n🎯 Basé sur votre expertise LinkedIn');
+        }
+
+        function generateControversy() {
+            if (document.getElementById('connection-status').textContent === 'Non connecté') {
+                alert('⚠️ Connectez votre profil LinkedIn pour du contenu controversé personnalisé.');
+                connectLinkedIn();
+                return;
+            }
+            alert('💥 Controverse générée et personnalisée !\n\n"Pourquoi votre secteur fait fausse route sur LinkedIn"\n\nPotentiel viral : 91%\n🎯 Adapté à votre positionnement');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePredictions();
+            
+            // Set up event listeners
+            const postContent = document.getElementById('post-content');
+            if (postContent) {
+                postContent.addEventListener('input', updateCharCount);
+            }
+            
+            const leadMagnetSelect = document.getElementById('lead-magnet-select');
+            if (leadMagnetSelect) {
+                leadMagnetSelect.addEventListener('change', updateLeadMagnetPreview);
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9816cf062178e881',t:'MTc1ODI2MTA1OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
